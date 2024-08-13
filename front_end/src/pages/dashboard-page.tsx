@@ -65,8 +65,8 @@ const DashboardPage: React.FC = () => {
           </div>
         )} */}
         {/* {pitcherId && <ArsenalStats pitcherId={pitcherId} />} */}
-        {/* {pitcherId && <RecentGames pitcherId={pitcherId} />} */}
-        {pitcherId && <CountStats pitcherId={pitcherId} />}
+        {pitcherId && <RecentGames pitcherId={pitcherId} />}
+        {/* {pitcherId && <CountStats pitcherId={pitcherId} />} */}
       </div>
     </div>
   );
