@@ -37,6 +37,74 @@ export const pitchColorMap: { [key: string]: string } = {
   FS: '#B71C1C', // Dark Red for Splitter
   ST: '#1E88E5', // Light Blue for Sweeper
 };
+export function getFullTeamName(abbreviation: string): string {
+  switch (abbreviation) {
+    case 'ARI':
+      return 'Diamondbacks';
+    case 'ATL':
+      return 'Braves';
+    case 'BAL':
+      return 'Orioles';
+    case 'BOS':
+      return 'Red Sox';
+    case 'CHC':
+      return 'Cubs';
+    case 'CHW':
+    case 'CWS':
+      return 'White Sox';
+    case 'CIN':
+      return 'Reds';
+    case 'CLE':
+      return 'Guardians';
+    case 'COL':
+      return 'Rockies';
+    case 'DET':
+      return 'Tigers';
+    case 'FLA':
+      return 'Marlins';
+    case 'HOU':
+      return 'Astros';
+    case 'KAN':
+      return 'Royals';
+    case 'LAA':
+      return 'Angels';
+    case 'LAD':
+      return 'Dodgers';
+    case 'MIL':
+      return 'Brewers';
+    case 'MIN':
+      return 'Twins';
+    case 'NYM':
+      return 'Mets';
+    case 'NYY':
+      return 'Yankees';
+    case 'OAK':
+      return 'Athletics';
+    case 'PHI':
+      return 'Phillies';
+    case 'PIT':
+      return 'Pirates';
+    case 'SD':
+      return 'Padres';
+    case 'SF':
+      return 'Giants';
+    case 'SEA':
+      return 'Mariners';
+    case 'STL':
+      return 'Cardinals';
+    case 'TB':
+      return 'Rays';
+    case 'TEX':
+      return 'Rangers';
+    case 'TOR':
+      return 'Blue Jays';
+    case 'WAS':
+      return 'Nationals';
+    default:
+      return 'Unknown Team';
+  }
+}
+
 export const getPitchColor =  (abbreviation: string): string => {
   return pitchColorMap[abbreviation] || '#CCCCCC';
 };
