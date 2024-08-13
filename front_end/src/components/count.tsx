@@ -11,7 +11,7 @@ const CountStats: React.FC<CountStatsProps> = ({ pitcherId }) => {
   const [countStats, setCountStats] = useState<PitchingStatistics | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
-  const [openCount, setOpenCount] = useState<string | null>(null);
+  const [openCount, setOpenCount] = useState<string | null>('0-0');
 
   const fetchCountStats = async () => {
     if (!pitcherId) return;
@@ -41,7 +41,7 @@ const CountStats: React.FC<CountStatsProps> = ({ pitcherId }) => {
   }, [pitcherId]);
 
   const toggleCount = (count: string) => {
-    setOpenCount(openCount === count ? null : count);
+    setOpenCount(count);
   };
 
   const getChartData = () => {
