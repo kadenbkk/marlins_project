@@ -1,3 +1,60 @@
+export interface PitchData {
+  ball_percentage: number;
+  in_play_percentage: number;
+  strike_percentage: number;
+  total_pitch_count: number;
+  total_pitch_percentage: number;
+}
+export const pitchNameMap: { [key: string]: string } = {
+  CH: 'Changeup',
+  CU: 'Curveball',
+  FC: 'Cutter',
+  EP: 'Eephus',
+  FO: 'Forkball',
+  FF: 'Four-Seam Fastball',
+  KN: 'Knuckleball',
+  KC: 'Knuckle-curve',
+  SC: 'Screwball',
+  SI: 'Sinker',
+  SL: 'Slider',
+  SV: 'Slurve',
+  FS: 'Splitter',
+  ST: 'Sweeper',
+};
+export const pitchColorMap: { [key: string]: string } = {
+  CH: '#42A5F5', // Blue for Changeup
+  CU: '#66BB6A', // Green for Curveball
+  FC: '#FF7043', // Orange for Cutter
+  EP: '#AB47BC', // Purple for Eephus
+  FO: '#FFEB3B', // Yellow for Forkball
+  FF: '#E53935', // Red for Four-Seam Fastball
+  KN: '#8E24AA', // Deep Purple for Knuckleball
+  KC: '#5C6BC0', // Blue Grey for Knuckle-curve
+  SC: '#7B1FA2', // Purple for Screwball
+  SI: '#009688', // Teal for Sinker
+  SL: '#0288D1', // Light Blue for Slider
+  SV: '#F57C00', // Deep Orange for Slurve
+  FS: '#B71C1C', // Dark Red for Splitter
+  ST: '#1E88E5', // Light Blue for Sweeper
+};
+export const getPitchColor =  (abbreviation: string): string => {
+  return pitchColorMap[abbreviation] || '#CCCCCC';
+};
+export const getPitchName = (abbreviation: string): string => {
+  return pitchNameMap[abbreviation] || abbreviation;
+};
+export const getPitchNameMapArray = (pitchTypes: string[]): string[] => {
+  return pitchTypes.map(pitchType => pitchNameMap[pitchType] || pitchType);
+};
+export interface CountScenario {
+  [pitchType: string]: PitchData;
+}
+
+export interface PitchingStatistics {
+  [count: string]: CountScenario;
+}
+
+
 export interface PitcherData {
     Age: string;
     BB: string;

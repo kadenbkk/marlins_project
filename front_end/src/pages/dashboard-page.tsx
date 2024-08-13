@@ -7,7 +7,7 @@ import RecentGames from '../components/recent-games';
 const DashboardPage: React.FC = () => {
   const location = useLocation();
   const { pitcherName, pitcherId } = location.state || { pitcherName: null, pitcherId: null };
-  const [arsenalStats, setArsenalStats] = useState<any>(null); 
+  const [arsenalStats, setArsenalStats] = useState<any>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
@@ -38,18 +38,19 @@ const DashboardPage: React.FC = () => {
   }, [pitcherId]);
 
   const handleNavigateBack = () => {
-    navigate(-1); 
+    navigate(-1);
   };
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100">
-      <div>
+      <div className="w-full">
         <button
           onClick={handleNavigateBack}
           className="mb-4 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
         >
           Go Back
         </button>
+        {/* 
         <h1 className="text-3xl font-bold text-blue-600">Dashboard</h1>
         {pitcherName && (
           <div>
@@ -62,9 +63,9 @@ const DashboardPage: React.FC = () => {
             <h2 className="text-xl font-semibold">Pitcher ID:</h2>
             <p className="text-lg text-gray-800">{pitcherId}</p>
           </div>
-        )}
-        {pitcherId && <ArsenalStats pitcherId={pitcherId} />}
-        {pitcherId && <RecentGames pitcherId={pitcherId} />}
+        )} */}
+        {/* {pitcherId && <ArsenalStats pitcherId={pitcherId} />} */}
+        {/* {pitcherId && <RecentGames pitcherId={pitcherId} />} */}
         {pitcherId && <CountStats pitcherId={pitcherId} />}
       </div>
     </div>
