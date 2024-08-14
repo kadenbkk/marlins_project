@@ -94,6 +94,7 @@ const RecentGamesDetails: React.FC<RecentGamesDetailsProps> = ({ pitcher_id }) =
     const [error, setError] = useState<string | null>(null);
     const [recentGames, setRecentGames] = useState<GameOption[]>([]);
     const [pitcherId, setPitcherId] = useState<string>(pitcher_id);
+    const [fetchedPlayerIds, setFetchedPlayerIds] = useState<Set<number>>(new Set());
     const aggregateEventCounts = (details: any[]) => {
         const eventCounts: Record<string, number> = {};
 
@@ -189,12 +190,22 @@ const RecentGamesDetails: React.FC<RecentGamesDetailsProps> = ({ pitcher_id }) =
     };
 
     const fetchPlayerNames = async (ids: number[]) => {
+        const newIds = ids.filter((id) => !fetchedPlayerIds.has(id)); // Filter out already fetched IDs
+        if (newIds.length === 0) return; // Exit if there are no new IDs to fetch
         try {
             const response = await fetch(`http://127.0.0.1:5000/get/name?ids=${ids.join(',')}`);
             const data = await response.json();
 
             if (response.ok) {
-                setPlayerNames(data.player_names); // Update playerNames state
+                setPlayerNames((prevPlayerNames) => ({
+                    ...prevPlayerNames,
+                    ...data.player_names,
+                }));
+                setFetchedPlayerIds((prevFetchedPlayerIds) => {
+                    const updatedSet = new Set(prevFetchedPlayerIds);
+                    newIds.forEach((id) => updatedSet.add(id));
+                    return updatedSet;
+                });
             } else {
                 console.error('Error fetching player names:', data.error);
             }
