@@ -4,6 +4,8 @@ import { useNavigate } from 'react-router-dom';
 const SelectionPage: React.FC = () => {
   const [pitchers, setPitchers] = useState<string[]>([]);
   const [chosenPitcherName, setChosenPitcherName] = useState<string | null>(null);
+  const [pitcherData, setPitcherData] = useState<any | null>(null);
+  const [chosenPitcherData, setChosenPitcherData] = useState<any | null>(null);
   const [chosenPitcherId, setChosenPitcherId] = useState<string | null>(null);
   const navigate = useNavigate(); 
 
@@ -13,7 +15,7 @@ const SelectionPage: React.FC = () => {
       const data = await response.json();
 
       if (response.ok) {
-        console.log('data:', data);
+        setPitcherData(data.data);
         setPitchers(data.pitcher_names);
       } else {
         console.error('Error:', response.statusText);
@@ -39,15 +41,16 @@ const SelectionPage: React.FC = () => {
     }
   };
 
-  const handlePitcherClick = (pitcher: string) => {
+  const handlePitcherClick = (pitcher: string, index: number) => {
     setChosenPitcherName(pitcher);
+    setChosenPitcherData(pitcherData[index]);
     const [firstName, lastName] = pitcher.split(' ');
     fetchPlayerId(firstName, lastName);
   };
 
   useEffect(() => {
     if (chosenPitcherId) {
-      navigate('/dashboard', { state: { pitcherName: chosenPitcherName, pitcherId: chosenPitcherId } });
+      navigate('/dashboard', { state: { pitcherName: chosenPitcherName, pitcherId: chosenPitcherId , chosenPitcherData: chosenPitcherData} });
     }
   }, [chosenPitcherId, navigate, chosenPitcherName]);
 
@@ -63,7 +66,7 @@ const SelectionPage: React.FC = () => {
               <li key={index}>
                 <button
                   className="text-lg text-gray-700"
-                  onClick={() => handlePitcherClick(pitcher)}
+                  onClick={() => handlePitcherClick(pitcher, index)}
                 >
                   {pitcher}
                 </button>

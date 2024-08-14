@@ -12,7 +12,7 @@ interface TabItem {
 }
 const DashboardPage: React.FC = () => {
   const location = useLocation();
-  const { pitcherName, pitcherId } = location.state || { pitcherName: null, pitcherId: null };
+  const { pitcherName, pitcherId, chosenPitcherData } = location.state || { pitcherName: null, pitcherId: null, chosenPitcherData: null };
   const navigate = useNavigate();
   const [selectedComponent, setSelectedComponent] = useState<'arsenal' | 'count' | null>(null);
   const [activeIndex, setActiveIndex] = useState<number>(-1); // To track the active tab index
@@ -56,17 +56,17 @@ const DashboardPage: React.FC = () => {
 
   }
   return (
-    <div className="flex flex-col h-screen bg-gray-700">
+    <div className="flex flex-col h-screen bg-color-surface-100">
       {pitcherName && (
-        <Header onClick={handleNavigateBack} name={pitcherName} />
+        <Header chosenPitcherData={chosenPitcherData} onClick={handleNavigateBack} name={pitcherName} />
       )}
-      <div className="relative w-full">
+      <div className="relative w-full ">
         <div className="absolute top-0 left-0 w-full flex flex-col">
-          <div className="flex flex-row bg-white justify-between items-center">
-            <TabMenu model={items} activeIndex={activeIndex} key={key}  /> 
+          <div className="flex flex-row bg-color-surface-300 justify-between items-center">
+            <TabMenu model={items} activeIndex={activeIndex} key={key}  className="bg-color-primary-300"/> 
             {activeIndex != -1 &&(
               <Button icon="pi pi-times" size="small" onClick={closeSelectedComponent} rounded  text raised aria-label="Close"
-                    style={{ backgroundColor: 'black', color: 'white' ,marginRight:"1rem" }}
+                    style={{ backgroundColor: '#98cbee', color: 'black' ,marginRight:"1rem" }}
                 />
             )
             }
@@ -76,7 +76,7 @@ const DashboardPage: React.FC = () => {
       </div>
 
       
-      {pitcherId && <RecentGamesDetails pitcher_id={pitcherId} />}
+      {pitcherId && <RecentGamesDetails pitcher_id={pitcherId} chosenPitcherData={chosenPitcherData}/>}
     </div>
   );
 };

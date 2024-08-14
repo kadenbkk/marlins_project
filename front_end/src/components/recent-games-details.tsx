@@ -6,6 +6,7 @@ import { RenderEventSummary } from './event-summary';
 import './tailwind.css';
 interface RecentGamesDetailsProps {
     pitcher_id: string;
+    chosenPitcherData: any;
 }
 interface GameOption {
     label: string;
@@ -47,8 +48,8 @@ const PlotZone: React.FC<PlotZoneProps> = ({ xCoords, yCoords, sz_top, sz_bot, t
     };
     const maxOpacity = 0.8;
     const minOpacity = 0.3;
-    const maxLength = 1000; 
-    const normalizedLength = Math.min(xCoords.length, maxLength); 
+    const maxLength = 1000;
+    const normalizedLength = Math.min(xCoords.length, maxLength);
     const fillOpacity = minOpacity + ((maxLength - normalizedLength) / maxLength) * (maxOpacity - minOpacity);
 
     // Center the strike zone within the container
@@ -91,7 +92,7 @@ const PlotZone: React.FC<PlotZoneProps> = ({ xCoords, yCoords, sz_top, sz_bot, t
 };
 
 
-const RecentGamesDetails: React.FC<RecentGamesDetailsProps> = ({ pitcher_id }) => {
+const RecentGamesDetails: React.FC<RecentGamesDetailsProps> = ({ pitcher_id, chosenPitcherData }) => {
     const [playerNames, setPlayerNames] = useState<Record<number, string>>({});
     const [selectedGame, setSelectedGame] = useState<GameOption | null>(null);
     const [gameData, setGameData] = useState<Record<string, GameData>>({});
@@ -218,11 +219,11 @@ const RecentGamesDetails: React.FC<RecentGamesDetailsProps> = ({ pitcher_id }) =
             console.error('Failed to fetch player names:', error);
         }
     };
-    useEffect(()=>{
-        if(selectedGame === null || selectedGame === undefined){
+    useEffect(() => {
+        if (selectedGame === null || selectedGame === undefined) {
             setSelectedAtBat(null);
         }
-    },[selectedGame]);
+    }, [selectedGame]);
 
     const details = selectedGame === null || selectedGame === undefined
         ? Object.values(gameData).flatMap((game: any) => game.details)
@@ -246,9 +247,9 @@ const RecentGamesDetails: React.FC<RecentGamesDetailsProps> = ({ pitcher_id }) =
     }));
 
     const onAtBatClick = (atBatNumber: number) => {
-        if(atBatNumber==selectedAtBat){
+        if (atBatNumber == selectedAtBat) {
             setSelectedAtBat(null);
-        }else{
+        } else {
             setSelectedAtBat(atBatNumber);
         }
     };
@@ -410,7 +411,7 @@ const RecentGamesDetails: React.FC<RecentGamesDetailsProps> = ({ pitcher_id }) =
     }, [pitcherId]);
     return (
         <div className="flex flex-row h-full">
-            <div className="w-full text-white flex items-center justify-center bg-gray-700 mt-14">
+            <div className="w-full text-off-white flex items-center justify-center bg-color-surface-100 mt-14">
                 <div className="h-custom-xl w-custom-xl relative flex items-center justify-center">
                     <div className="h-64 w-48 border-4 border-gray-200 grid grid-cols-3 grid-rows-3">
                         <div className="flex items-center border justify-center"></div>
@@ -429,9 +430,9 @@ const RecentGamesDetails: React.FC<RecentGamesDetailsProps> = ({ pitcher_id }) =
                     </div>
                 </div>
             </div>
-            <div className="flex flex-col p-4 bg-gray-700 w-96 ">
+            <div className="flex flex-col p-4 bg-color-surface-100 w-96 ">
                 <div className="w-80 flex flex-col mt-10">
-                    <h2 className="text-xl font-semibold mb-2">All Games</h2>
+                    <h2 className="text-xl text-off-white font-semibold mb-2">All Games</h2>
                     <Dropdown
                         value={selectedGame}
                         onChange={(e) => setSelectedGame(e.value)}
@@ -441,13 +442,13 @@ const RecentGamesDetails: React.FC<RecentGamesDetailsProps> = ({ pitcher_id }) =
                         showClear
                         itemTemplate={gameOptionTemplate}
                         className="w-full md:w-14rem"
-                        style={{ padding: '5px', border: '1px solid lightgray', borderRadius: "10px" ,backgroundColor:"white"}}
+                        style={{ padding: '5px', border: '1px solid lightgray', borderRadius: "10px", backgroundColor: "white" }}
                     />
 
                 </div>
-                {selectedGame !== null && selectedGame !== undefined && (
+                {selectedGame !== null && selectedGame !== undefined ? (
                     <div>
-                        <RenderEventSummary eventCounts={eventCounts}/>
+                        <RenderEventSummary eventCounts={eventCounts} />
                         <div className="flex flex-col space-y-2 mt-4 h-70 overflow-y-auto">
                             {atBatArray.reduce((acc: JSX.Element[], result, index) => {
                                 const inning = result.events[0].inning;
@@ -457,7 +458,7 @@ const RecentGamesDetails: React.FC<RecentGamesDetailsProps> = ({ pitcher_id }) =
                                     acc.push(
                                         <div key={`separator-${inning}`} className="flex items-center">
                                             <hr className="flex-grow border-t-2 border-gray-300" />
-                                            <span className="mx-2 font-semibold text-white">Inning {inning}</span>
+                                            <span className="mx-2 font-semibold text-off-white">Inning {inning}</span>
                                             <hr className="flex-grow border-t-2 border-gray-300" />
                                         </div>
                                     );
@@ -468,7 +469,7 @@ const RecentGamesDetails: React.FC<RecentGamesDetailsProps> = ({ pitcher_id }) =
                                     <button
                                         key={result.atBatNumber}
                                         onClick={() => onAtBatClick(result.atBatNumber)}
-                                        className={`${selectedAtBat== result.atBatNumber ? "bg-blue-800": "bg-blue-500"}  text-white py-2 px-4 flex flex-row justify-between rounded hover:bg-blue-700`}
+                                        className={`${selectedAtBat == result.atBatNumber ? "bg-color-primary-100" : "bg-color-primary-500"}  text-dark py-2 px-4 flex flex-row justify-between rounded hover:bg-color-primary-300`}
                                     >
                                         <div>{playerNames[result.events[0].batter] || 'Loading...'}</div>
                                         <div>{convertEventToAbbreviation(result.events[0])}</div>
@@ -477,6 +478,77 @@ const RecentGamesDetails: React.FC<RecentGamesDetailsProps> = ({ pitcher_id }) =
 
                                 return acc;
                             }, [])}
+                        </div>
+                    </div>
+                ) : (
+                    <div>
+                        <h2 className="text-xl font-semibold text-off-white mt-4 mb-2">Season Statistics</h2>
+                        <div className="mt-2 grid grid-cols-1 gap-1 p-5 bg-color-surface-200 text-off-white rounded-md">
+                            <div className="flex justify-between items-center">
+                                <span className="font-semibold">Wins:</span>
+                                <span>{chosenPitcherData.W}</span>
+                            </div>
+                            <div className="flex justify-between items-center">
+                                <span className="font-semibold">Losses:</span>
+                                <span>{chosenPitcherData.L}</span>
+                            </div>
+                            <div className="flex justify-between items-center">
+                                <span className="font-semibold">Win-Loss %:</span>
+                                <span>{chosenPitcherData["W-L%"]}</span>
+                            </div>
+                            <div className="flex justify-between items-center">
+                                <span className="font-semibold">Games:</span>
+                                <span>{chosenPitcherData.G}</span>
+                            </div>
+                            <div className="flex justify-between items-center">
+                                <span className="font-semibold">Earned Runs:</span>
+                                <span>{chosenPitcherData.ER}</span>
+                            </div>
+                            <div className="flex justify-between items-center">
+                                <span className="font-semibold">ERA:</span>
+                                <span>{chosenPitcherData.ERA}</span>
+                            </div>
+                            <div className="flex justify-between items-center">
+                                <span className="font-semibold">Batters Faced:</span>
+                                <span>{chosenPitcherData.BF}</span>
+                            </div>
+                            <div className="flex justify-between items-center">
+                                <span className="font-semibold">Innings Pitched:</span>
+                                <span>{chosenPitcherData.IP}</span>
+                            </div>
+                            <div className="flex justify-between items-center">
+                                <span className="font-semibold">Walks:</span>
+                                <span>{chosenPitcherData.BB}</span>
+                            </div>
+                            <div className="flex justify-between items-center">
+                                <span className="font-semibold">BB/9:</span>
+                                <span>{chosenPitcherData.BB9}</span>
+                            </div>
+                            <div className="flex justify-between items-center">
+                                <span className="font-semibold">Hits Allowed:</span>
+                                <span>{chosenPitcherData.H}</span>
+                            </div>
+                            <div className="flex justify-between items-center">
+                                <span className="font-semibold">Hits per 9 Innings:</span>
+                                <span>{chosenPitcherData.H9}</span>
+                            </div>
+
+                            <div className="flex justify-between items-center">
+                                <span className="font-semibold">Strikeouts:</span>
+                                <span>{chosenPitcherData.SO}</span>
+                            </div>
+                            <div className="flex justify-between items-center">
+                                <span className="font-semibold">SO/9:</span>
+                                <span>{chosenPitcherData.SO9}</span>
+                            </div>
+                            <div className="flex justify-between items-center">
+                                <span className="font-semibold">Strikeout/Walk Ratio:</span>
+                                <span>{chosenPitcherData["SO/W"]}</span>
+                            </div>
+                            <div className="flex justify-between items-center">
+                                <span className="font-semibold">WHIP:</span>
+                                <span>{chosenPitcherData.WHIP}</span>
+                            </div>
                         </div>
                     </div>
                 )}
