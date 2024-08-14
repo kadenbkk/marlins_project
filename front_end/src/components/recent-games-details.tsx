@@ -45,6 +45,11 @@ const PlotZone: React.FC<PlotZoneProps> = ({ xCoords, yCoords, sz_top, sz_bot, t
     const scaleToPlotAreaY = (value: number) => {
         return (value / (5)) * height;
     };
+    const maxOpacity = 0.8;
+    const minOpacity = 0.3;
+    const maxLength = 1000; 
+    const normalizedLength = Math.min(xCoords.length, maxLength); 
+    const fillOpacity = minOpacity + ((maxLength - normalizedLength) / maxLength) * (maxOpacity - minOpacity);
 
     // Center the strike zone within the container
     const centerX = width / 2;
@@ -73,7 +78,7 @@ const PlotZone: React.FC<PlotZoneProps> = ({ xCoords, yCoords, sz_top, sz_bot, t
                 cy={height - scaleToPlotAreaY(yCoords[index])}
                 r="15"
                 fill={fillColor}
-                fillOpacity={0.8}
+                fillOpacity={fillOpacity}
             />
         );
     });
@@ -263,6 +268,7 @@ const RecentGamesDetails: React.FC<RecentGamesDetailsProps> = ({ pitcher_id }) =
             case "home_run":
                 return "HR";
             case "grounded_into_double_play":
+            case "double_play":
                 return "DP";
             case "walk":
                 return "BB";
