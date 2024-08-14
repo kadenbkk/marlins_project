@@ -9,20 +9,18 @@ const DashboardPage: React.FC = () => {
   const location = useLocation();
   const { pitcherName, pitcherId } = location.state || { pitcherName: null, pitcherId: null };
   const navigate = useNavigate();
-  const [selectedComponent, setSelectedComponent] = useState<'arsenal' | 'recent' | 'count' | null>(null);
+  const [selectedComponent, setSelectedComponent] = useState<'arsenal' | 'count' | null>(null);
   const renderSelectedComponent = () => {
     switch (selectedComponent) {
       case 'arsenal':
         return pitcherId && <ArsenalStats pitcherId={pitcherId} />;
-      case 'recent':
-        return pitcherId && <RecentGames pitcherId={pitcherId} />;
       case 'count':
         return pitcherId && <CountStats pitcherId={pitcherId} />;
       default:
         return null;
     }
   };
-  const handleButtonClick = (component: 'arsenal' | 'recent' | 'count') => {
+  const handleButtonClick = (component: 'arsenal' | 'count') => {
     setSelectedComponent(prev => (prev === component ? null : component));
   };
   const handleNavigateBack = () => {
@@ -30,33 +28,26 @@ const DashboardPage: React.FC = () => {
   };
 
   return (
-    <div className="flex flex-col  min-h-screen bg-gray-100">
-      <div className="w-full">
-        {pitcherName && (
-          <Header onClick={handleNavigateBack} name={pitcherName} />
-        )}
-        <div className="flex space-x-4 mb-4">
-          <button
-            onClick={() => handleButtonClick('arsenal')}
-            className={`px-4 py-2 rounded ${selectedComponent === 'arsenal' ? 'bg-blue-600 text-white' : 'bg-gray-200'}`}
-          >
-            Arsenal Stats
-          </button>
-          <button
-            onClick={() => handleButtonClick('recent')}
-            className={`px-4 py-2 rounded ${selectedComponent === 'recent' ? 'bg-blue-600 text-white' : 'bg-gray-200'}`}
-          >
-            Recent Games
-          </button>
-          <button
-            onClick={() => handleButtonClick('count')}
-            className={`px-4 py-2 rounded ${selectedComponent === 'count' ? 'bg-blue-600 text-white' : 'bg-gray-200'}`}
-          >
-            Count Stats
-          </button>
-        </div>
-        {renderSelectedComponent()}
+    <div className="flex flex-col h-screen bg-gray-100">
+      {pitcherName && (
+        <Header onClick={handleNavigateBack} name={pitcherName} />
+      )}
+      <div className="flex space-x-4 mb-4">
+        <button
+          onClick={() => handleButtonClick('arsenal')}
+          className={`px-4 py-2 rounded ${selectedComponent === 'arsenal' ? 'bg-blue-600 text-white' : 'bg-gray-200'}`}
+        >
+          Arsenal Stats
+        </button>
+        <button
+          onClick={() => handleButtonClick('count')}
+          className={`px-4 py-2 rounded ${selectedComponent === 'count' ? 'bg-blue-600 text-white' : 'bg-gray-200'}`}
+        >
+          Count Stats
+        </button>
       </div>
+      {renderSelectedComponent()}
+      {pitcherId && <RecentGames pitcherId={pitcherId} />}
     </div>
   );
 };

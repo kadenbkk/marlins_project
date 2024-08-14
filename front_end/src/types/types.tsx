@@ -5,6 +5,7 @@ export interface PitchData {
   total_pitch_count: number;
   total_pitch_percentage: number;
 }
+
 export const pitchNameMap: { [key: string]: string } = {
   CH: 'Changeup',
   CU: 'Curveball',
