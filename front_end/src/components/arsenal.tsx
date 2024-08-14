@@ -53,23 +53,23 @@ const ArsenalCard: React.FC<ArsenalCardProps> = ({ data, pitchVelocities }) => {
 
   const pitchVelocity = pitchVelocities.find((item: { pitch_type: string; }) => item.pitch_type === data.pitch_type);
   const velocity = pitchVelocity ? pitchVelocity.average_velocity.toFixed(1) : 'N/A';
-  
+
   return (
-    <div className="bg-white shadow-lg w-96 rounded-lg p-6 mb-4 border border-gray-200">
-      <h3 className="text-xl font-semibold mb-2">{data.pitch_name}</h3>
+    <div className="bg-white shadow-lg min-w-[18rem] p-4 h-full rounded-lg border border-gray-200">
+      <h3 className="text-lg font-semibold mb-1">{data.pitch_name}</h3>
       {velocity && (
         <div className="flex justify-between">
-          <span className="font-medium">Velocity:</span>
+          <span className="font-medium text-sm">Velocity:</span>
           <span>{velocity} mph</span>
         </div>
       )}
-      <div className="flex flex-col space-y-2">
+      <div className="flex flex-col space-y-1">
         {Object.entries(DISPLAY_FIELDS).map(([key, label]) => (
           key !== 'pitch_type' && (
-          <div key={key} className="flex justify-between">
-            <span className="font-medium">{label}:</span>
-            <span>{data[key as keyof ArsenalCardData]}</span>
-          </div>
+            <div key={key} className="flex justify-between">
+              <span className="font-sm text-sm">{label}:</span>
+              <span className="text-sm">{data[key as keyof ArsenalCardData]}</span>
+            </div>
           )
         ))}
       </div>
@@ -111,17 +111,24 @@ const ArsenalStats: React.FC<ArsenalStatsProps> = ({ pitcherId }) => {
 
   return (
     <div>
-      {loading && <p className="text-gray-600">Loading arsenal stats...</p>}
+      {loading && 
+      <div className="relative">
+        <div className="absolute top-0 left-0 w-full h-56  bg-white flex z-20 items-center justify-center">
+          Loading
+        </div>
+      </div>
+      }
       {error && <p className="text-red-600">{error}</p>}
       {arsenalStats && (
-        <div>
-          <h2 className="text-xl font-semibold mt-4">Arsenal Stats:</h2>
-          <div className="w-full flex flex-wrap">
-            {arsenalStats.original_arsenal.map((item) => (
-              <ArsenalCard key={`${item.pitch_name}-${item.team_name_alt}-${item['last_name, first_name']}`} data={item}
-                pitchVelocities={arsenalStats.pitch_velocities}
-              />
-            ))}
+        <div className="relative">
+          <div className="absolute top-0 left-0 w-full h-64  bg-white flex flex-wrap z-20 overflow-x-auto">
+            <div className="flex space-x-4 p-4">
+              {arsenalStats.original_arsenal.map((item) => (
+                <ArsenalCard key={`${item.pitch_name}-${item.team_name_alt}-${item['last_name, first_name']}`} data={item}
+                  pitchVelocities={arsenalStats.pitch_velocities}
+                />
+              ))}
+            </div>
           </div>
         </div>
       )}

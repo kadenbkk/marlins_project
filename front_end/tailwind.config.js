@@ -10,6 +10,7 @@ module.exports = {
       },
       height: {
         'custom-xl': '640px', // Example custom width
+        '70': '17rem',
       },
     },
   },

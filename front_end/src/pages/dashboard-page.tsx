@@ -3,13 +3,22 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import ArsenalStats from '../components/arsenal';
 import CountStats from '../components/count';
 import Header from '../components/header';
-import RecentGames from '../components/recent-games';
-
+import RecentGamesDetails from '../components/recent-games-details';
+import { TabMenu } from 'primereact/tabmenu';
+import { Button } from 'primereact/button';
+interface TabItem {
+  label: string;
+  command?: () => void;
+}
 const DashboardPage: React.FC = () => {
   const location = useLocation();
   const { pitcherName, pitcherId } = location.state || { pitcherName: null, pitcherId: null };
   const navigate = useNavigate();
   const [selectedComponent, setSelectedComponent] = useState<'arsenal' | 'count' | null>(null);
+  const [activeIndex, setActiveIndex] = useState<number>(-1); // To track the active tab index
+  const [key, setKey] = useState(0);
+
+
   const renderSelectedComponent = () => {
     switch (selectedComponent) {
       case 'arsenal':
@@ -20,34 +29,54 @@ const DashboardPage: React.FC = () => {
         return null;
     }
   };
-  const handleButtonClick = (component: 'arsenal' | 'count') => {
+  const items: TabItem[] = [
+    {
+      label: 'Arsenal Stats',
+      command: () => handleButtonClick('arsenal', 0),
+    },
+    {
+      label: 'Count Stats',
+      command: () => handleButtonClick('count', 1),
+    },
+  ];
+
+  const handleButtonClick = (component: 'arsenal' | 'count', index: number) => {
     setSelectedComponent(prev => (prev === component ? null : component));
+    setActiveIndex(prev => (prev === index ? -1 : index)); 
+    setKey(prev => prev + 1); 
+
   };
   const handleNavigateBack = () => {
     navigate(-1);
   };
+  const closeSelectedComponent = () =>{
+    setSelectedComponent(null);
+    setActiveIndex(-1);
+    setKey(prev => prev + 1); 
 
+  }
   return (
-    <div className="flex flex-col h-screen bg-gray-100">
+    <div className="flex flex-col h-screen bg-gray-700">
       {pitcherName && (
         <Header onClick={handleNavigateBack} name={pitcherName} />
       )}
-      <div className="flex space-x-4 mb-4">
-        <button
-          onClick={() => handleButtonClick('arsenal')}
-          className={`px-4 py-2 rounded ${selectedComponent === 'arsenal' ? 'bg-blue-600 text-white' : 'bg-gray-200'}`}
-        >
-          Arsenal Stats
-        </button>
-        <button
-          onClick={() => handleButtonClick('count')}
-          className={`px-4 py-2 rounded ${selectedComponent === 'count' ? 'bg-blue-600 text-white' : 'bg-gray-200'}`}
-        >
-          Count Stats
-        </button>
+      <div className="relative w-full">
+        <div className="absolute top-0 left-0 w-full flex flex-col">
+          <div className="flex flex-row bg-white justify-between items-center">
+            <TabMenu model={items} activeIndex={activeIndex} key={key}  /> 
+            {activeIndex != -1 &&(
+              <Button icon="pi pi-times" size="small" onClick={closeSelectedComponent} rounded  text raised aria-label="Close"
+                    style={{ backgroundColor: 'black', color: 'white' ,marginRight:"1rem" }}
+                />
+            )
+            }
+          </div>
+          {renderSelectedComponent()}
+        </div>
       </div>
-      {renderSelectedComponent()}
-      {pitcherId && <RecentGames pitcherId={pitcherId} />}
+
+      
+      {pitcherId && <RecentGamesDetails pitcher_id={pitcherId} />}
     </div>
   );
 };

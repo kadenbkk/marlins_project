@@ -116,15 +116,15 @@ const CountStats: React.FC<CountStatsProps> = ({ pitcherId }) => {
 
 
   return (
-    <div>
-      {loading && <p className="text-gray-600">Loading recent games...</p>}
+    <div className="relative">
+      {loading && <div className="w-full bg-white h-72 absolute top-0 left-0 z-20 flex items-center justify-center">Loading...</div>}
       {error && <p className="text-red-600">{error}</p>}
-      <div className="w-full">
-        <div className="flex flex-wrap">
+      <div className="w-full absolute top-0 left-0 z-20">
+        <div className="flex flex-wrap bg-white">
           {Object.keys(countStats || {}).map((count) => (
             <div className="w-1/12 px-0.5 rounded" key={count}>
               <button
-                className={`flex items-center justify-center w-full text-left font-bold text-lg ${openCount === count ? 'bg-white' : 'bg-gray-200'
+                className={`flex items-center justify-center w-full text-left font-bold text-lg ${openCount === count ? 'bg-blue-200' : 'bg-gray-200'
                   } text-black p-2 rounded-t-xl 
                 ${openCount === count ? 'hover:bg-white' : 'hover:bg-gray-300'
                   } 

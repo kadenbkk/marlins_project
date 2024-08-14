@@ -1,7 +1,15 @@
+import { Dropdown } from 'primereact/dropdown';
 import React, { useEffect, useState } from 'react';
-
+import { getFullTeamName } from '../types/types';
+import { parseJSONWithNaN } from '../utils/utils';
+import { RenderEventSummary } from './event-summary';
+import './tailwind.css';
 interface RecentGamesDetailsProps {
-    data: any;
+    pitcher_id: string;
+}
+interface GameOption {
+    label: string;
+    value: number;
 }
 interface PlotZoneProps {
     xCoords: number[];
@@ -10,14 +18,25 @@ interface PlotZoneProps {
     sz_bot: number[];
     types: any[];
 }
+interface GameData {
+    details: any[];
+    game_date: string;
+    opponent: string;
+}
+const gameOptionTemplate = (option: GameOption) => {
+    return (
+        <div className="flex justify-between w-full py-2 pl-3 pr-4 ">
+            <span>{option.label.split(',\u00A0')[0]}</span>
+            <span>{option.label.split(',\u00A0')[1]}</span>
+        </div>
+    );
+};
 const PlotZone: React.FC<PlotZoneProps> = ({ xCoords, yCoords, sz_top, sz_bot, types }) => {
     const width = 640;
     const height = 640;
     const strikeZoneWidth = 288; // Width of the strike zone in pixels
     const strikeZoneHeight = 384; // Height of the strike zone in pixels
     const strikeZoneXRange = 1; // Horizontal range in feet
-    console.log("xCoords: ", xCoords);
-    console.log("yCoords: ", yCoords);
     // Function to convert feet to pixels for the strike zone
     const scaleToPlotAreaX = (value: number) => {
         return ((value) / (strikeZoneXRange)) * (strikeZoneWidth / 2);
@@ -67,9 +86,14 @@ const PlotZone: React.FC<PlotZoneProps> = ({ xCoords, yCoords, sz_top, sz_bot, t
 };
 
 
-const RecentGamesDetails: React.FC<RecentGamesDetailsProps> = ({ data }) => {
+const RecentGamesDetails: React.FC<RecentGamesDetailsProps> = ({ pitcher_id }) => {
     const [playerNames, setPlayerNames] = useState<Record<number, string>>({});
-
+    const [selectedGame, setSelectedGame] = useState<GameOption | null>(null);
+    const [gameData, setGameData] = useState<Record<string, GameData>>({});
+    const [loading, setLoading] = useState<boolean>(true);
+    const [error, setError] = useState<string | null>(null);
+    const [recentGames, setRecentGames] = useState<GameOption[]>([]);
+    const [pitcherId, setPitcherId] = useState<string>(pitcher_id);
     const aggregateEventCounts = (details: any[]) => {
         const eventCounts: Record<string, number> = {};
 
@@ -178,13 +202,19 @@ const RecentGamesDetails: React.FC<RecentGamesDetailsProps> = ({ data }) => {
             console.error('Failed to fetch player names:', error);
         }
     };
+    useEffect(()=>{
+        if(selectedGame === null || selectedGame === undefined){
+            setSelectedAtBat(null);
+        }
+    },[selectedGame]);
 
-    const { details } = data;
+    const details = selectedGame === null || selectedGame === undefined
+        ? Object.values(gameData).flatMap((game: any) => game.details)
+        : gameData[String(selectedGame)].details;
 
     // Aggregate event and description counts
     const eventCounts = aggregateEventCounts(details);
     const atBatResults = groupByAtBatNumber(details);
-    console.log("details: ", details);
     useEffect(() => {
         // Collect all batter IDs from the atBatResults
         const batterIds = details.map((event: any) => event.batter).filter((id: number) => id !== undefined);
@@ -200,7 +230,11 @@ const RecentGamesDetails: React.FC<RecentGamesDetailsProps> = ({ data }) => {
     }));
 
     const onAtBatClick = (atBatNumber: number) => {
-        setSelectedAtBat(atBatNumber);
+        if(atBatNumber==selectedAtBat){
+            setSelectedAtBat(null);
+        }else{
+            setSelectedAtBat(atBatNumber);
+        }
     };
     const convertEventToAbbreviation = (event: { events: string; description: string; bb_type: string; hit_location: string; }) => {
         switch (event.events) {
@@ -222,7 +256,7 @@ const RecentGamesDetails: React.FC<RecentGamesDetailsProps> = ({ data }) => {
             case "walk":
                 return "BB";
             case "hit_by_pitch":
-                return "HP";
+                return "HBP";
             case "sac_fly":
                 return "SF";
             case "balk":
@@ -314,10 +348,52 @@ const RecentGamesDetails: React.FC<RecentGamesDetailsProps> = ({ data }) => {
     };
 
     const { x, y, sz_top, sz_bot, types } = aggregateCoordinates(selectedAtBat);
+    const formatGameLabel = (gamePk: string, data: any): string => {
+        const fullTeamName = getFullTeamName(data[gamePk].opponent);
+        const gameDate = new Date(data[gamePk].game_date);
+        const formattedDate = gameDate.toLocaleString('en-US', { month: 'short', day: 'numeric' });
+        return `${fullTeamName},\u00A0${formattedDate}`;
+    };
+    const fetchRecentGames = async () => {
+        if (!pitcherId) return;
 
+        try {
+            const response = await fetch(`http://127.0.0.1:5000/stats/pitcher/recent/${pitcherId}`);
+            const text = await response.text();
+
+            if (response.ok) {
+                const data = parseJSONWithNaN(text);
+
+                const sortedGameKeys = Object.keys(data).sort((a, b) => {
+                    const dateA = new Date(data[a].game_date);
+                    const dateB = new Date(data[b].game_date);
+                    return dateB.getTime() - dateA.getTime();
+                });
+
+                const gameOptions: GameOption[] = sortedGameKeys.map((gamePk) => ({
+                    label: formatGameLabel(gamePk, data),
+                    value: parseInt(gamePk, 10),
+                }));
+
+                setRecentGames(gameOptions);
+                setGameData(data);
+            } else {
+                console.error('Error:', response.statusText);
+                setError('An error occurred');
+            }
+        } catch (err) {
+            console.error('Failed to fetch recent games.', err);
+            setError('Failed to fetch recent games.');
+        } finally {
+            setLoading(false);
+        }
+    };
+    useEffect(() => {
+        fetchRecentGames();
+    }, [pitcherId]);
     return (
-        <div className="flex flex-row">
-            <div className="w-full bg-gray-700 text-white flex items-center justify-center h-screen">
+        <div className="flex flex-row h-full">
+            <div className="w-full text-white flex items-center justify-center bg-gray-700 mt-14">
                 <div className="h-custom-xl w-custom-xl relative flex items-center justify-center">
                     <div className="h-64 w-48 border-4 border-gray-200 grid grid-cols-3 grid-rows-3">
                         <div className="flex items-center border justify-center"></div>
@@ -336,44 +412,57 @@ const RecentGamesDetails: React.FC<RecentGamesDetailsProps> = ({ data }) => {
                     </div>
                 </div>
             </div>
-            <div className="flex flex-col p-4 bg-gray-100 w-96 border border-gray-300">
-                <h2 className="text-xl font-semibold mb-2">Game Summary</h2>
-                <ul>
-                    {Object.entries(eventCounts).map(([eventType, count]) => (
-                        <li key={eventType} className="py-1">
-                            <span className="font-semibold">{eventType}:</span> {count}
-                        </li>
-                    ))}
-                </ul>
-                <div className="flex flex-col space-y-2 h-64 overflow-y-auto">
-                    {atBatArray.reduce((acc: JSX.Element[], result, index) => {
-                        const inning = result.events[0].inning;
-                        const isFirstAtBatOfInning = index === 0 || atBatArray[index - 1].events[0].inning !== inning;
+            <div className="flex flex-col p-4 bg-gray-700 w-96 ">
+                <div className="w-80 flex flex-col mt-10">
+                    <h2 className="text-xl font-semibold mb-2">Recent Games</h2>
+                    <Dropdown
+                        value={selectedGame}
+                        onChange={(e) => setSelectedGame(e.value)}
+                        options={recentGames}
+                        optionLabel="label"
+                        placeholder="Select a game"
+                        showClear
+                        itemTemplate={gameOptionTemplate}
+                        className="w-full md:w-14rem"
+                        style={{ padding: '5px', border: '1px solid lightgray', borderRadius: "10px" ,backgroundColor:"white"}}
+                    />
 
-                        if (isFirstAtBatOfInning && index >= 0) {
-                            acc.push(
-                                <div key={`separator-${inning}`} className="flex items-center">
-                                    <hr className="flex-grow border-t-2 border-gray-300" />
-                                    <span className="mx-2 font-semibold text-gray-700">Inning {inning}</span>
-                                    <hr className="flex-grow border-t-2 border-gray-300" />
-                                </div>
-                            );
-                        }
-
-
-                        acc.push(
-                            <button
-                                key={result.atBatNumber}
-                                onClick={() => onAtBatClick(result.atBatNumber)}
-                                className="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-700"
-                            >
-                                {index + 1}. {playerNames[result.events[0].batter] || 'Loading...'} {convertEventToAbbreviation(result.events[0])}
-                            </button>
-                        );
-
-                        return acc;
-                    }, [])}
                 </div>
+                {selectedGame !== null && selectedGame !== undefined && (
+                    <div>
+                        <RenderEventSummary eventCounts={eventCounts}/>
+                        <div className="flex flex-col space-y-2 mt-4 h-70 overflow-y-auto">
+                            {atBatArray.reduce((acc: JSX.Element[], result, index) => {
+                                const inning = result.events[0].inning;
+                                const isFirstAtBatOfInning = index === 0 || atBatArray[index - 1].events[0].inning !== inning;
+
+                                if (isFirstAtBatOfInning && index >= 0) {
+                                    acc.push(
+                                        <div key={`separator-${inning}`} className="flex items-center">
+                                            <hr className="flex-grow border-t-2 border-gray-300" />
+                                            <span className="mx-2 font-semibold text-white">Inning {inning}</span>
+                                            <hr className="flex-grow border-t-2 border-gray-300" />
+                                        </div>
+                                    );
+                                }
+
+
+                                acc.push(
+                                    <button
+                                        key={result.atBatNumber}
+                                        onClick={() => onAtBatClick(result.atBatNumber)}
+                                        className={`${selectedAtBat== result.atBatNumber ? "bg-blue-800": "bg-blue-500"}  text-white py-2 px-4 flex flex-row justify-between rounded hover:bg-blue-700`}
+                                    >
+                                        <div>{playerNames[result.events[0].batter] || 'Loading...'}</div>
+                                        <div>{convertEventToAbbreviation(result.events[0])}</div>
+                                    </button>
+                                );
+
+                                return acc;
+                            }, [])}
+                        </div>
+                    </div>
+                )}
             </div>
         </div>
     );
