@@ -414,7 +414,7 @@ const RecentGamesDetails: React.FC<RecentGamesDetailsProps> = ({ pitcher_id }) =
             </div>
             <div className="flex flex-col p-4 bg-gray-700 w-96 ">
                 <div className="w-80 flex flex-col mt-10">
-                    <h2 className="text-xl font-semibold mb-2">Recent Games</h2>
+                    <h2 className="text-xl font-semibold mb-2">All Games</h2>
                     <Dropdown
                         value={selectedGame}
                         onChange={(e) => setSelectedGame(e.value)}

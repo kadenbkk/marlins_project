@@ -65,7 +65,7 @@ export function getFullTeamName(abbreviation: string): string {
       return 'Marlins';
     case 'HOU':
       return 'Astros';
-    case 'KAN':
+    case 'KC':
       return 'Royals';
     case 'LAA':
       return 'Angels';
@@ -99,7 +99,7 @@ export function getFullTeamName(abbreviation: string): string {
       return 'Rangers';
     case 'TOR':
       return 'Blue Jays';
-    case 'WAS':
+    case 'WSH':
       return 'Nationals';
     default:
       return 'Unknown Team';
