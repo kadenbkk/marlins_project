@@ -56,18 +56,35 @@ const DashboardPage: React.FC = () => {
 
   }
   return (
-    <div className="flex flex-col h-screen bg-color-surface-100">
+    <div className="flex flex-col h-screen bg-page">
       {pitcherName && (
         <Header chosenPitcherData={chosenPitcherData} onClick={handleNavigateBack} name={pitcherName} />
       )}
       <div className="relative w-full ">
         <div className="absolute top-0 left-0 w-full flex flex-col">
-          <div className="flex flex-row bg-color-surface-300 justify-between items-center">
-            <TabMenu model={items} activeIndex={activeIndex} key={key}  className="bg-color-primary-300"/> 
+          <div className="flex flex-row bg-page justify-between items-center">
+            <TabMenu model={items} activeIndex={activeIndex} key={key}  className="bg-page"/> 
             {activeIndex != -1 &&(
-              <Button icon="pi pi-times" size="small" onClick={closeSelectedComponent} rounded  text raised aria-label="Close"
-                    style={{ backgroundColor: '#98cbee', color: 'black' ,marginRight:"1rem" }}
-                />
+                <button
+                    onClick={closeSelectedComponent}
+                    aria-label="Back"
+                    style={{
+                        display: 'flex',
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                        border: '2px solid #00A3E0',
+                        boxShadow: '-1px 1px 0 0.5px #EE3541',
+                        backgroundColor: 'black',
+                        color: 'white',
+                        width: '2rem',
+                        height: '2rem', 
+                        borderRadius: '50%', 
+                        cursor: 'pointer',
+                        marginRight: "1rem",
+                    }}
+                >
+                    <i className="pi pi-times" style={{ fontSize: '12px' }}></i>
+                </button>
             )
             }
           </div>

@@ -411,7 +411,7 @@ const RecentGamesDetails: React.FC<RecentGamesDetailsProps> = ({ pitcher_id, cho
     }, [pitcherId]);
     return (
         <div className="flex flex-row h-full">
-            <div className="w-full text-off-white flex items-center justify-center bg-color-surface-100 mt-14">
+            <div className="w-full text-off-white flex items-center justify-center  rounded-lg my-4 ml-2 bg-card mt-14 rounded">
                 <div className="h-custom-xl w-custom-xl relative flex items-center justify-center">
                     <div className="h-64 w-48 border-4 border-gray-200 grid grid-cols-3 grid-rows-3">
                         <div className="flex items-center border justify-center"></div>
@@ -425,14 +425,13 @@ const RecentGamesDetails: React.FC<RecentGamesDetailsProps> = ({ pitcher_id, cho
                         <div className="flex items-center border justify-center"></div>
                         <PlotZone xCoords={x} yCoords={y} sz_top={sz_top} sz_bot={sz_bot} types={types} />
                     </div>
-                    <div className="bg-gray-200 rounded-t-md w-48 absolute h-10 bottom-0 z-0">
-
+                    <div className="bg-gray-200 rounded-t-md w-48  absolute h-10 bottom-0 z-0">
                     </div>
                 </div>
             </div>
-            <div className="flex flex-col p-4 bg-color-surface-100 w-96 ">
-                <div className="w-80 flex flex-col mt-10">
-                    <h2 className="text-xl text-off-white font-semibold mb-2">All Games</h2>
+            <div className="flex flex-col p-4 bg-page w-96 ">
+                <div className="w-80 flex flex-col mt-10 bg-card p-4 rounded-lg">
+                    <h2 className="text-xl text-white mb-2">All Games</h2>
                     <Dropdown
                         value={selectedGame}
                         onChange={(e) => setSelectedGame(e.value)}
@@ -458,7 +457,7 @@ const RecentGamesDetails: React.FC<RecentGamesDetailsProps> = ({ pitcher_id, cho
                                     acc.push(
                                         <div key={`separator-${inning}`} className="flex items-center">
                                             <hr className="flex-grow border-t-2 border-gray-300" />
-                                            <span className="mx-2 font-semibold text-off-white">Inning {inning}</span>
+                                            <span className="mx-2  text-off-white">Inning {inning}</span>
                                             <hr className="flex-grow border-t-2 border-gray-300" />
                                         </div>
                                     );
@@ -481,72 +480,72 @@ const RecentGamesDetails: React.FC<RecentGamesDetailsProps> = ({ pitcher_id, cho
                         </div>
                     </div>
                 ) : (
-                    <div>
-                        <h2 className="text-xl font-semibold text-off-white mt-4 mb-2">Season Statistics</h2>
-                        <div className="mt-2 grid grid-cols-1 gap-1 p-5 bg-color-surface-200 text-off-white rounded-md">
+                    <div className="mt-2">
+                        <div className="mt-2 grid grid-cols-1 gap-1 p-5 bg-card text-white rounded-lg">
+                            <h2 className="text-xl text-off-white mb-2">Season Statistics</h2>
                             <div className="flex justify-between items-center">
-                                <span className="font-semibold">Wins:</span>
+                                <span className="">Wins:</span>
                                 <span>{chosenPitcherData.W}</span>
                             </div>
                             <div className="flex justify-between items-center">
-                                <span className="font-semibold">Losses:</span>
+                                <span className="">Losses:</span>
                                 <span>{chosenPitcherData.L}</span>
                             </div>
                             <div className="flex justify-between items-center">
-                                <span className="font-semibold">Win-Loss %:</span>
+                                <span className="">Win-Loss %:</span>
                                 <span>{chosenPitcherData["W-L%"]}</span>
                             </div>
                             <div className="flex justify-between items-center">
-                                <span className="font-semibold">Games:</span>
+                                <span className="">Games:</span>
                                 <span>{chosenPitcherData.G}</span>
                             </div>
                             <div className="flex justify-between items-center">
-                                <span className="font-semibold">Earned Runs:</span>
+                                <span className="">Earned Runs:</span>
                                 <span>{chosenPitcherData.ER}</span>
                             </div>
                             <div className="flex justify-between items-center">
-                                <span className="font-semibold">ERA:</span>
+                                <span className="">ERA:</span>
                                 <span>{chosenPitcherData.ERA}</span>
                             </div>
                             <div className="flex justify-between items-center">
-                                <span className="font-semibold">Batters Faced:</span>
+                                <span className="">Batters Faced:</span>
                                 <span>{chosenPitcherData.BF}</span>
                             </div>
                             <div className="flex justify-between items-center">
-                                <span className="font-semibold">Innings Pitched:</span>
+                                <span className="">Innings Pitched:</span>
                                 <span>{chosenPitcherData.IP}</span>
                             </div>
                             <div className="flex justify-between items-center">
-                                <span className="font-semibold">Walks:</span>
+                                <span className="">Walks:</span>
                                 <span>{chosenPitcherData.BB}</span>
                             </div>
                             <div className="flex justify-between items-center">
-                                <span className="font-semibold">BB/9:</span>
+                                <span className="">BB/9:</span>
                                 <span>{chosenPitcherData.BB9}</span>
                             </div>
                             <div className="flex justify-between items-center">
-                                <span className="font-semibold">Hits Allowed:</span>
+                                <span className="">Hits Allowed:</span>
                                 <span>{chosenPitcherData.H}</span>
                             </div>
                             <div className="flex justify-between items-center">
-                                <span className="font-semibold">Hits per 9 Innings:</span>
+                                <span className="">Hits per 9 Innings:</span>
                                 <span>{chosenPitcherData.H9}</span>
                             </div>
 
                             <div className="flex justify-between items-center">
-                                <span className="font-semibold">Strikeouts:</span>
+                                <span className="">Strikeouts:</span>
                                 <span>{chosenPitcherData.SO}</span>
                             </div>
                             <div className="flex justify-between items-center">
-                                <span className="font-semibold">SO/9:</span>
+                                <span className="">SO/9:</span>
                                 <span>{chosenPitcherData.SO9}</span>
                             </div>
                             <div className="flex justify-between items-center">
-                                <span className="font-semibold">Strikeout/Walk Ratio:</span>
+                                <span className="">Strikeout/Walk Ratio:</span>
                                 <span>{chosenPitcherData["SO/W"]}</span>
                             </div>
                             <div className="flex justify-between items-center">
-                                <span className="font-semibold">WHIP:</span>
+                                <span className="">WHIP:</span>
                                 <span>{chosenPitcherData.WHIP}</span>
                             </div>
                         </div>

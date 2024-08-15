@@ -13,15 +13,31 @@ const Header: React.FC<ExportFunctionHeaderProps> = ({ name, chosenPitcherData, 
         : chosenPitcherData.Pos === "RP" ? "Relief Pitcher"
             : "Pitcher";
     return (
-        <div className="flex flex-row items-center justify-between p-4 bg-color-surface-100">
+        <div className="flex flex-row items-center justify-between p-4 bg-card">
             <div className="flex flex-row items-center">
-                <Button icon="pi pi-angle-left" size="large" onClick={onClick} rounded text raised aria-label="Back"
-                    style={{ backgroundColor: '#98cbee', color: 'black' }}
-                />
-                <h1 className="text-2xl ml-4 text-off-white font-semibold">{name}</h1>
+                <button
+                    onClick={onClick}
+                    aria-label="Back"
+                    style={{
+                        display: 'flex',
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                        border: '2px solid #00A3E0',
+                        boxShadow: '-1px 1px 0 0.5px #EE3541',
+                        backgroundColor: 'black',
+                        color: 'white',
+                        width: '2rem',
+                        height: '2rem', 
+                        borderRadius: '50%', 
+                        cursor: 'pointer',
+                    }}
+                >
+                    <i className="pi pi-angle-left"></i>
+                </button>
+                <h1 className="text-2xl  ml-4 text-off-white font-semibold">{name}</h1>
             </div>
             <div>
-                <img className="h-24 object-contain" src={logo} alt="Logo"></img>
+                {/* <img className="h-10 object-contain" src={logo} alt="Logo"></img> */}
             </div>
             <div className="flex flex-row justify-between items-center">
                 <div className="text-lg font-medium text-white">

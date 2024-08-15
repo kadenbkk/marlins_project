@@ -117,16 +117,16 @@ const CountStats: React.FC<CountStatsProps> = ({ pitcherId }) => {
 
   return (
     <div className="relative">
-      {loading && <div className="w-full bg-white h-72 absolute top-0 left-0 z-20 flex items-center justify-center">Loading...</div>}
+      {loading && <div className="w-full bg-card h-72 absolute top-0 left-0 z-20 flex items-center justify-center">Loading...</div>}
       {error && <p className="text-red-600">{error}</p>}
       <div className="w-full absolute top-0 left-0 z-20">
-        <div className="flex flex-wrap bg-white">
+        <div className="flex flex-wrap bg-card">
           {Object.keys(countStats || {}).map((count) => (
             <div className="w-1/12 px-0.5 rounded" key={count}>
               <button
                 className={`flex items-center justify-center w-full text-left font-bold text-lg ${openCount === count ? 'bg-blue-200' : 'bg-gray-200'
                   } text-black p-2 rounded-t-xl 
-                ${openCount === count ? 'hover:bg-white' : 'hover:bg-gray-300'
+                ${openCount === count ? 'hover:bg-card' : 'hover:bg-gray-300'
                   } 
                 transition-colors`}
                 onClick={() => toggleCount(count)}
@@ -137,7 +137,7 @@ const CountStats: React.FC<CountStatsProps> = ({ pitcherId }) => {
           ))}
         </div>
         {openCount && countStats && countStats[openCount] && (
-          <div className="bg-white">
+          <div className="bg-card">
             <div className="flex flex-wrap">
               {chartData && (
                 <div className="p-2 relative flex items-center justify-center w-1/5">

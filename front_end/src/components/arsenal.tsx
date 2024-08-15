@@ -55,7 +55,7 @@ const ArsenalCard: React.FC<ArsenalCardProps> = ({ data, pitchVelocities }) => {
   const velocity = pitchVelocity ? pitchVelocity.average_velocity.toFixed(1) : 'N/A';
 
   return (
-    <div className="bg-white shadow-lg min-w-[18rem] p-4 h-full rounded-lg border border-gray-200">
+    <div className="bg-card shadow-lg min-w-[18rem] p-4 h-full rounded-lg border border-gray-200">
       <h3 className="text-lg font-semibold mb-1">{data.pitch_name}</h3>
       {velocity && (
         <div className="flex justify-between">
@@ -113,7 +113,7 @@ const ArsenalStats: React.FC<ArsenalStatsProps> = ({ pitcherId }) => {
     <div>
       {loading && 
       <div className="relative">
-        <div className="absolute top-0 left-0 w-full h-56  bg-white flex z-20 items-center justify-center">
+        <div className="absolute top-0 left-0 w-full h-56  bg-card flex z-20 items-center justify-center">
           Loading
         </div>
       </div>
@@ -121,7 +121,7 @@ const ArsenalStats: React.FC<ArsenalStatsProps> = ({ pitcherId }) => {
       {error && <p className="text-red-600">{error}</p>}
       {arsenalStats && (
         <div className="relative">
-          <div className="absolute top-0 left-0 w-full h-64  bg-white flex flex-wrap z-20 overflow-x-auto">
+          <div className="absolute top-0 left-0 w-full h-64  bg-card flex flex-wrap z-20 overflow-x-auto">
             <div className="flex space-x-4 p-4">
               {arsenalStats.original_arsenal.map((item) => (
                 <ArsenalCard key={`${item.pitch_name}-${item.team_name_alt}-${item['last_name, first_name']}`} data={item}

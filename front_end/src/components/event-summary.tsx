@@ -8,9 +8,9 @@ export const RenderEventSummary: React.FC<RenderEventSummaryProps> = ({
     eventCounts
 }) => {
     return (
-        <div>
-            <h2 className="text-xl font-semibold mb-2 mt-4">Game Summary</h2>
-            <div className="flex flex-col w-full bg-white rounded p-4">
+        <div className="mt-4">
+            <div className="flex flex-col w-full bg-card rounded-xl p-4">
+                <h2 className="text-xl font-semibold mb-2">Game Summary</h2>
                 <div className="flex flex-row justify-between my-2">
                     <div>
                         Strikeouts: {eventCounts['Strike outs']}

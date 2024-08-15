@@ -12,6 +12,22 @@ module.exports = {
         'custom-xl': '640px', // Example custom width
         '70': '17rem',
       },
+      backgroundColor:{
+        'card':'  rgb(16,20,24)',
+        'page':' rgb(11,13,16)',
+        '1' : "#F8F9FA",
+        '2' : "#E9ECEF",
+        '3' : "#DEE2E6",
+        '4' : "#CED4DA",
+        '5' : "#ADB5BD",
+        '6' : "#6C757D",
+        '7' : "#495057",
+        '8' : "#343A40",
+        '9' : "#212529",
+        'blue': "#00A3E0",
+        'red': "#EF3340",
+        'slate-gray': "#41748D",
+      }
     },
   },
   plugins: [],

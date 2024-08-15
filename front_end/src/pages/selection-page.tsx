@@ -7,7 +7,7 @@ const SelectionPage: React.FC = () => {
   const [pitcherData, setPitcherData] = useState<any | null>(null);
   const [chosenPitcherData, setChosenPitcherData] = useState<any | null>(null);
   const [chosenPitcherId, setChosenPitcherId] = useState<string | null>(null);
-  const navigate = useNavigate(); 
+  const navigate = useNavigate();
 
   const getAllPitchers = async () => {
     try {
@@ -50,23 +50,37 @@ const SelectionPage: React.FC = () => {
 
   useEffect(() => {
     if (chosenPitcherId) {
-      navigate('/dashboard', { state: { pitcherName: chosenPitcherName, pitcherId: chosenPitcherId , chosenPitcherData: chosenPitcherData} });
+      navigate('/dashboard', { state: { pitcherName: chosenPitcherName, pitcherId: chosenPitcherId, chosenPitcherData: chosenPitcherData } });
     }
   }, [chosenPitcherId, navigate, chosenPitcherName]);
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-100">
+    <div className="flex items-center justify-center min-h-screen bg-page">
       <div>
         {pitchers.length === 0 && (
-          <button onClick={getAllPitchers}>Pitchers</button>
+          <button className="rounded" style={{
+            border: '2px solid #00A3E0',
+            boxShadow: '-1px 1px 0 0.5px #EE3541',
+            backgroundColor: 'black',
+            color: 'white',
+            padding: "10px",
+            width: "10rem",
+          }}
+          onClick={getAllPitchers}>Pitchers</button>
         )}
         {pitchers.length > 0 && (
-          <ul className="list-disc list-inside">
+          <ul className="grid grid-cols-3 gap-4 p-0 m-0 list-none">
             {pitchers.map((pitcher, index) => (
               <li key={index}>
                 <button
-                  className="text-lg text-gray-700"
+                  className="text-lg text-gray-700 rounded w-full p-2 flex justify-center items-center"
                   onClick={() => handlePitcherClick(pitcher, index)}
+                  style={{
+                    border: '2px solid #00A3E0',
+                    boxShadow: '-1px 1px 0 0.5px #EE3541',
+                    backgroundColor: 'black',
+                    color: 'white',
+                  }}
                 >
                   {pitcher}
                 </button>
@@ -74,6 +88,7 @@ const SelectionPage: React.FC = () => {
             ))}
           </ul>
         )}
+
       </div>
     </div>
   );
