@@ -4,6 +4,13 @@ import { getFullTeamName } from '../types/types';
 import { parseJSONWithNaN } from '../utils/utils';
 import { RenderEventSummary } from './event-summary';
 import './tailwind.css';
+import { TabMenu } from 'primereact/tabmenu';
+import ArsenalStats from './arsenal';
+import CountStats from './count';
+interface TabItem {
+    label: string;
+    command?: () => void;
+  }
 interface RecentGamesDetailsProps {
     pitcher_id: string;
     chosenPitcherData: any;
@@ -409,28 +416,99 @@ const RecentGamesDetails: React.FC<RecentGamesDetailsProps> = ({ pitcher_id, cho
     useEffect(() => {
         fetchRecentGames();
     }, [pitcherId]);
+    const [selectedComponent, setSelectedComponent] = useState<'arsenal' | 'count' | null>(null);
+  const [activeIndex, setActiveIndex] = useState<number>(-1); // To track the active tab index
+  const [key, setKey] = useState(0);
+
+
+  const renderSelectedComponent = () => {
+    switch (selectedComponent) {
+      case 'arsenal':
+        return pitcherId && <ArsenalStats pitcherId={pitcherId} />;
+      case 'count':
+        return pitcherId && <CountStats pitcherId={pitcherId} />;
+      default:
+        return null;
+    }
+  };
+  const items: TabItem[] = [
+    {
+      label: 'Arsenal Stats',
+      command: () => handleButtonClick('arsenal', 0),
+    },
+    {
+      label: 'Count Stats',
+      command: () => handleButtonClick('count', 1),
+    },
+  ];
+
+  const handleButtonClick = (component: 'arsenal' | 'count', index: number) => {
+    setSelectedComponent(prev => (prev === component ? null : component));
+    setActiveIndex(prev => (prev === index ? -1 : index)); 
+    setKey(prev => prev + 1); 
+
+  };
+  const closeSelectedComponent = () =>{
+    setSelectedComponent(null);
+    setActiveIndex(-1);
+    setKey(prev => prev + 1); 
+
+  }
     return (
         <div className="flex flex-row h-full">
-            <div className="w-full text-off-white flex items-center justify-center  rounded-lg my-4 ml-2 bg-card mt-14 rounded">
-                <div className="h-custom-xl w-custom-xl relative flex items-center justify-center">
-                    <div className="h-64 w-48 border-4 border-gray-200 grid grid-cols-3 grid-rows-3">
-                        <div className="flex items-center border justify-center"></div>
-                        <div className="flex items-center border justify-center"></div>
-                        <div className="flex items-center border justify-center"></div>
-                        <div className="flex items-center border justify-center"></div>
-                        <div className="flex items-center border justify-center"></div>
-                        <div className="flex items-center border justify-center"></div>
-                        <div className="flex items-center border justify-center"></div>
-                        <div className="flex items-center border justify-center"></div>
-                        <div className="flex items-center border justify-center"></div>
-                        <PlotZone xCoords={x} yCoords={y} sz_top={sz_top} sz_bot={sz_bot} types={types} />
+            <div className="flex flex-col w-full">
+                <div className="relative w-full ml-4 mt-4">
+                    <div className="absolute top-0 left-0 w-full flex flex-col">
+                        <div className="flex flex-row bg-page justify-between items-center">
+                            <TabMenu model={items} activeIndex={activeIndex} key={key} className="bg-page" />
+                            {activeIndex != -1 && (
+                                <button
+                                    onClick={closeSelectedComponent}
+                                    aria-label="Back"
+                                    style={{
+                                        display: 'flex',
+                                        justifyContent: 'center',
+                                        alignItems: 'center',
+                                        border: '2px solid #00A3E0',
+                                        boxShadow: '-1px 1px 0 0.5px #EE3541',
+                                        backgroundColor: 'black',
+                                        color: 'white',
+                                        width: '2rem',
+                                        height: '2rem',
+                                        borderRadius: '50%',
+                                        cursor: 'pointer',
+                                        marginRight: "1rem",
+                                    }}
+                                >
+                                    <i className="pi pi-times" style={{ fontSize: '12px' }}></i>
+                                </button>
+                            )
+                            }
+                        </div>
+                        {renderSelectedComponent()}
                     </div>
-                    <div className="bg-gray-200 rounded-t-md w-48  absolute h-10 bottom-0 z-0">
+                </div>
+                <div className="w-full text-off-white flex items-center justify-center  rounded-lg  ml-4 mb-4 bg-card mt-14 rounded">
+                    <div className="h-custom-xl w-custom-xl relative flex items-center justify-center">
+                        <div className="h-64 w-48 border-4 border-gray-200 grid grid-cols-3 grid-rows-3">
+                            <div className="flex items-center border justify-center"></div>
+                            <div className="flex items-center border justify-center"></div>
+                            <div className="flex items-center border justify-center"></div>
+                            <div className="flex items-center border justify-center"></div>
+                            <div className="flex items-center border justify-center"></div>
+                            <div className="flex items-center border justify-center"></div>
+                            <div className="flex items-center border justify-center"></div>
+                            <div className="flex items-center border justify-center"></div>
+                            <div className="flex items-center border justify-center"></div>
+                            <PlotZone xCoords={x} yCoords={y} sz_top={sz_top} sz_bot={sz_bot} types={types} />
+                        </div>
+                        <div className="bg-gray-200 rounded-t-md w-48  absolute h-10 bottom-0 z-0">
+                        </div>
                     </div>
                 </div>
             </div>
             <div className="flex flex-col p-4 bg-page w-96 ">
-                <div className="w-80 flex flex-col mt-10 bg-card p-4 rounded-lg">
+                <div className="w-80 flex flex-col  bg-card p-4 rounded-lg">
                     <h2 className="text-xl text-white mb-2">All Games</h2>
                     <Dropdown
                         value={selectedGame}
