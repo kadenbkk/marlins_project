@@ -286,6 +286,8 @@ const RecentGamesDetails: React.FC<RecentGamesDetailsProps> = ({ pitcher_id, cho
                 return "HBP";
             case "sac_fly":
                 return "SF";
+            case "sac_bunt":
+                return "SH";
             case "balk":
                 return "BK";
             case "fielder_choice":
