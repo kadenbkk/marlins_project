@@ -15,7 +15,7 @@ const DashboardPage: React.FC = () => {
   return (
     <div className="flex flex-col h-screen bg-page">
       {pitcherName && (
-        <Header chosenPitcherData={chosenPitcherData} onClick={handleNavigateBack} name={pitcherName} />
+        <Header chosenPitcherData={chosenPitcherData} pitcher_id={pitcherId}  onClick={handleNavigateBack} name={pitcherName} />
       )}
 
       

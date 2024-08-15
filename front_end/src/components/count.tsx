@@ -124,9 +124,9 @@ const CountStats: React.FC<CountStatsProps> = ({ pitcherId }) => {
           {Object.keys(countStats || {}).map((count) => (
             <div className="w-1/12 px-0.5 rounded" key={count}>
               <button
-                className={`flex items-center justify-center w-full text-left font-bold text-lg ${openCount === count ? 'bg-blue-200' : 'bg-gray-200'
+                className={`flex items-center justify-center w-full text-left font-bold text-lg ${openCount === count ? 'bg-blue' : 'bg-slate-gray'
                   } text-black p-2 rounded-t-xl 
-                ${openCount === count ? 'hover:bg-card' : 'hover:bg-gray-300'
+                ${openCount === count ? 'hover:bg-blue' : 'hover:bg-slate-gray-hover'
                   } 
                 transition-colors`}
                 onClick={() => toggleCount(count)}

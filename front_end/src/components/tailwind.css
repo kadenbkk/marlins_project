@@ -1,3 +1,33 @@
-.p-dropdown-item-label{
+.p-dropdown-item-label {
     width: 100%;
+}
+
+/* styles.css */
+
+
+.custom-tab-menu .p-reset{
+    background-color: transparent !important;
+}
+.custom-tab-menu .p-highlight .p-menuitem-link{
+    border-color:#EF3340;
+    color: #00A3E0;
+}
+
+.custom-tab-menu .p-menuitem-link:hover {
+    /* Specific styles for TabMenu element */
+    background-color: transparent !important;
+    color: #41748D;
+    border-color: #41748D;
+    /* Example style */
+}
+.custom-tab-menu .p-menuitem-link {
+    /* Specific styles for TabMenu element */
+    padding-left: 100px;
+    padding-top: 20px;
+    padding-bottom: 20px;
+    padding-right: 100px;
+    background-color: transparent !important;
+    color: white;
+    border-color: white;
+    /* Example style */
 }

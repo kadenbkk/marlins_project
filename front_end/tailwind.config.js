@@ -12,6 +12,9 @@ module.exports = {
         'custom-xl': '640px', // Example custom width
         '70': '17rem',
       },
+      textColor:{
+        'off-white': '#B0B0B0',
+      },
       backgroundColor:{
         'card':'  rgb(16,20,24)',
         'page':' rgb(11,13,16)',
@@ -27,6 +30,7 @@ module.exports = {
         'blue': "#00A3E0",
         'red': "#EF3340",
         'slate-gray': "#41748D",
+        'slate-gray-hover': '#2E5A6E',
       }
     },
   },

@@ -10,7 +10,7 @@ import CountStats from './count';
 interface TabItem {
     label: string;
     command?: () => void;
-  }
+}
 interface RecentGamesDetailsProps {
     pitcher_id: string;
     chosenPitcherData: any;
@@ -40,7 +40,7 @@ const gameOptionTemplate = (option: GameOption) => {
     );
 };
 const PlotZone: React.FC<PlotZoneProps> = ({ xCoords, yCoords, sz_top, sz_bot, types }) => {
-    const width = 640;
+    const width = 1000;
     const height = 640;
     const strikeZoneWidth = 288; // Width of the strike zone in pixels
     const strikeZoneHeight = 384; // Height of the strike zone in pixels
@@ -67,12 +67,14 @@ const PlotZone: React.FC<PlotZoneProps> = ({ xCoords, yCoords, sz_top, sz_bot, t
         switch (type) {
             case "strike":
                 return "red";
+            case "swinging":
+                return "darkred";
             case "ball":
                 return "green";
             case "hit":
                 return "gray";
             default:
-                return "gray";
+                return "white";
         }
     };
 
@@ -313,14 +315,18 @@ const RecentGamesDetails: React.FC<RecentGamesDetailsProps> = ({ pitcher_id, cho
     const [selectedAtBat, setSelectedAtBat] = useState<number | null>(null);
 
     // Filter coordinates based on the selected at-bat
+    const uniqueEvents = new Set<string>();
     const aggregateCoordinates = (atBatNumber: number | null) => {
+
         if (atBatNumber === null) {
             // Aggregate coordinates for all at-bats
             return atBatArray.reduce(
                 (acc, atBat) => {
                     atBat.events.forEach(event => {
-                        const strikes = new Set(['called_strike', 'swinging_strike', 'foul', 'foul_tip']);
-                        const balls = new Set(['ball', 'blocked_ball']);
+                        const strike = new Set(['called_strike']);
+                        const strikesSwinging = new Set(['swinging_strike', 'foul', 'foul_tip', "swinging_strike_blocked", "foul_bunt"]);
+                        const balls = new Set(['ball', 'blocked_ball', "hit_by_pitch"]);
+                        const hit = new Set(["hit_into_play"]);
 
                         if (event.plate_x !== undefined && event.plate_z !== undefined && event.sz_top !== undefined && event.sz_bot !== undefined && event.description !== undefined) {
                             acc.x.push(event.plate_x);
@@ -328,28 +334,35 @@ const RecentGamesDetails: React.FC<RecentGamesDetailsProps> = ({ pitcher_id, cho
                             acc.sz_top.push(event.sz_top);
                             acc.sz_bot.push(event.sz_bot);
 
-                            if (strikes.has(event.description)) {
+                            if (strike.has(event.description)) {
                                 acc.types.push("strike");
                             } else if (balls.has(event.description)) {
                                 acc.types.push("ball");
-                            } else {
+                            } else if (strikesSwinging.has(event.description)) {
+                                acc.types.push("swinging");
+                            } else if (hit.has(event.description)) {
                                 acc.types.push("hit");
+                            } else {
+                                acc.types.push("unknown");
                             }
+
                         }
                     });
                     return acc;
                 },
                 { x: [], y: [], sz_top: [], sz_bot: [], types: [] } as { x: number[]; y: number[]; sz_top: number[]; sz_bot: number[]; types: string[] }
             );
+
         } else {
             // Aggregate coordinates for the selected at-bat
             const atBat = atBatArray.find(atBat => atBat.atBatNumber === atBatNumber);
             if (!atBat) return { x: [], y: [], types: [] };
-
             return atBat.events.reduce(
                 (acc, event) => {
-                    const strikes = new Set(['called_strike', 'swinging_strike', 'foul', 'foul_tip']);
-                    const balls = new Set(['ball', 'blocked_ball']);
+                    const strike = new Set(['called_strike']);
+                    const strikesSwinging = new Set(['swinging_strike', 'foul', 'foul_tip', "swinging_strike_blocked", "foul_bunt"]);
+                    const balls = new Set(['ball', 'blocked_ball', "hit_by_pitch"]);
+                    const hit = new Set(["hit_into_play"]);
 
                     if (event.plate_x !== undefined && event.plate_z !== undefined && event.sz_top !== undefined && event.sz_bot !== undefined && event.description !== undefined) {
                         acc.x.push(event.plate_x);
@@ -357,13 +370,18 @@ const RecentGamesDetails: React.FC<RecentGamesDetailsProps> = ({ pitcher_id, cho
                         acc.sz_top.push(event.sz_top);
                         acc.sz_bot.push(event.sz_bot);
 
-                        if (strikes.has(event.description)) {
+                        if (strike.has(event.description)) {
                             acc.types.push("strike");
                         } else if (balls.has(event.description)) {
                             acc.types.push("ball");
-                        } else {
+                        } else if (strikesSwinging.has(event.description)) {
+                            acc.types.push("swinging");
+                        } else if (hit.has(event.description)) {
                             acc.types.push("hit");
+                        } else {
+                            acc.types.push("unknown");
                         }
+
                     }
                     return acc;
                 },
@@ -371,8 +389,8 @@ const RecentGamesDetails: React.FC<RecentGamesDetailsProps> = ({ pitcher_id, cho
             );
         }
     };
-
     const { x, y, sz_top, sz_bot, types } = aggregateCoordinates(selectedAtBat);
+    console.log("unique: ", uniqueEvents);
     const formatGameLabel = (gamePk: string, data: any): string => {
         const fullTeamName = getFullTeamName(data[gamePk].opponent);
         const gameDate = new Date(data[gamePk].game_date);
@@ -417,50 +435,50 @@ const RecentGamesDetails: React.FC<RecentGamesDetailsProps> = ({ pitcher_id, cho
         fetchRecentGames();
     }, [pitcherId]);
     const [selectedComponent, setSelectedComponent] = useState<'arsenal' | 'count' | null>(null);
-  const [activeIndex, setActiveIndex] = useState<number>(-1); // To track the active tab index
-  const [key, setKey] = useState(0);
+    const [activeIndex, setActiveIndex] = useState<number>(-1); // To track the active tab index
+    const [key, setKey] = useState(0);
 
 
-  const renderSelectedComponent = () => {
-    switch (selectedComponent) {
-      case 'arsenal':
-        return pitcherId && <ArsenalStats pitcherId={pitcherId} />;
-      case 'count':
-        return pitcherId && <CountStats pitcherId={pitcherId} />;
-      default:
-        return null;
+    const renderSelectedComponent = () => {
+        switch (selectedComponent) {
+            case 'arsenal':
+                return pitcherId && <ArsenalStats pitcherId={pitcherId} />;
+            case 'count':
+                return pitcherId && <CountStats pitcherId={pitcherId} />;
+            default:
+                return null;
+        }
+    };
+    const items: TabItem[] = [
+        {
+            label: 'Arsenal Stats',
+            command: () => handleButtonClick('arsenal', 0),
+        },
+        {
+            label: 'Count Stats',
+            command: () => handleButtonClick('count', 1),
+        },
+    ];
+
+    const handleButtonClick = (component: 'arsenal' | 'count', index: number) => {
+        setSelectedComponent(prev => (prev === component ? null : component));
+        setActiveIndex(prev => (prev === index ? -1 : index));
+        setKey(prev => prev + 1);
+
+    };
+    const closeSelectedComponent = () => {
+        setSelectedComponent(null);
+        setActiveIndex(-1);
+        setKey(prev => prev + 1);
+
     }
-  };
-  const items: TabItem[] = [
-    {
-      label: 'Arsenal Stats',
-      command: () => handleButtonClick('arsenal', 0),
-    },
-    {
-      label: 'Count Stats',
-      command: () => handleButtonClick('count', 1),
-    },
-  ];
-
-  const handleButtonClick = (component: 'arsenal' | 'count', index: number) => {
-    setSelectedComponent(prev => (prev === component ? null : component));
-    setActiveIndex(prev => (prev === index ? -1 : index)); 
-    setKey(prev => prev + 1); 
-
-  };
-  const closeSelectedComponent = () =>{
-    setSelectedComponent(null);
-    setActiveIndex(-1);
-    setKey(prev => prev + 1); 
-
-  }
     return (
         <div className="flex flex-row h-full">
             <div className="flex flex-col w-full">
                 <div className="relative w-full ml-4 mt-4">
-                    <div className="absolute top-0 left-0 w-full flex flex-col">
-                        <div className="flex flex-row bg-page justify-between items-center">
-                            <TabMenu model={items} activeIndex={activeIndex} key={key} className="bg-page" />
+                    <div className="absolute top-0 left-0 w-full flex flex-col pr-4 z-20 ">
+                        <div className="flex flex-row bg-card justify-between items-center h-14  bg-card rounded-t-lg">
+                            <TabMenu model={items} activeIndex={activeIndex} key={key} className=" mx-2 custom-tab-menu" />
                             {activeIndex != -1 && (
                                 <button
                                     onClick={closeSelectedComponent}
@@ -488,8 +506,8 @@ const RecentGamesDetails: React.FC<RecentGamesDetailsProps> = ({ pitcher_id, cho
                         {renderSelectedComponent()}
                     </div>
                 </div>
-                <div className="w-full text-off-white flex items-center justify-center  rounded-lg  ml-4 mb-4 bg-card mt-14 rounded">
-                    <div className="h-custom-xl w-custom-xl relative flex items-center justify-center">
+                <div className=" text-off-white flex items-center justify-center rounded-b-lg ml-4 mb-4  bg-card mt-12 min-w-[1000px]">
+                    <div className="h-custom-xl relative flex items-center justify-center bg-transparent  rounded-xl" style={{"width":"1000px"}}>
                         <div className="h-64 w-48 border-4 border-gray-200 grid grid-cols-3 grid-rows-3">
                             <div className="flex items-center border justify-center"></div>
                             <div className="flex items-center border justify-center"></div>
@@ -526,7 +544,7 @@ const RecentGamesDetails: React.FC<RecentGamesDetailsProps> = ({ pitcher_id, cho
                 {selectedGame !== null && selectedGame !== undefined ? (
                     <div>
                         <RenderEventSummary eventCounts={eventCounts} />
-                        <div className="flex flex-col space-y-2 mt-4 h-70 overflow-y-auto">
+                        <div className="flex flex-col  rounded-lg bg-card p-4 space-y-2 mt-4 h-80 overflow-y-auto">
                             {atBatArray.reduce((acc: JSX.Element[], result, index) => {
                                 const inning = result.events[0].inning;
                                 const isFirstAtBatOfInning = index === 0 || atBatArray[index - 1].events[0].inning !== inning;
@@ -546,7 +564,7 @@ const RecentGamesDetails: React.FC<RecentGamesDetailsProps> = ({ pitcher_id, cho
                                     <button
                                         key={result.atBatNumber}
                                         onClick={() => onAtBatClick(result.atBatNumber)}
-                                        className={`${selectedAtBat == result.atBatNumber ? "bg-color-primary-100" : "bg-color-primary-500"}  text-dark py-2 px-4 flex flex-row justify-between rounded hover:bg-color-primary-300`}
+                                        className={`${selectedAtBat == result.atBatNumber ? "bg-blue" : "bg-slate-gray"}  text-black py-2 px-4 flex flex-row justify-between rounded ${selectedAtBat == result.atBatNumber ? "hover:bg-blue" : "hover:bg-slate-gray-hover"}`}
                                     >
                                         <div>{playerNames[result.events[0].batter] || 'Loading...'}</div>
                                         <div>{convertEventToAbbreviation(result.events[0])}</div>
