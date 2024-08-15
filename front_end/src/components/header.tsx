@@ -1,6 +1,5 @@
 import React from 'react';
-import { Button } from 'primereact/button';
-import logo from '../assets/marlins_logo.svg';
+import logo from '../assets/m_logo.png';
 
 interface ExportFunctionHeaderProps {
     onClick: () => void;
@@ -35,15 +34,15 @@ const Header: React.FC<ExportFunctionHeaderProps> = ({ name, pitcher_id, chosenP
                 >
                     <i className="pi pi-angle-left"></i>
                 </button>
-                <div className="flex flex-row items-center pt-10 h-64">
+                <div className="flex flex-row ml-14  items-center h-48 ">
                     <img
                         src={`https://securea.mlb.com/mlb/images/players/head_shot/${pitcher_id}.jpg`}
                         alt={""}
-                        className="mr-2 rounded-full object-contain w-32"
+                        className="mr-2 rounded-full object-contain w-28"
                         style={{ backgroundColor: 'rgb(195, 195, 195)' }}
                     />
                     <div className="flex flex-col ml-4  items-start">
-                        <h1 className="text-6xl text-white">{name}</h1>
+                        <h1 className="text-5xl text-white">{name}</h1>
                         <div className="flex  ml-2 mt-2 mb-0.5 flex-row justify-between items-center">
                             <div className="text-md  text-off-white">
                                 <span className="text-sub-title ">Age:</span> {chosenPitcherData.Age}
@@ -58,8 +57,8 @@ const Header: React.FC<ExportFunctionHeaderProps> = ({ name, pitcher_id, chosenP
                     </div>
                 </div>
             </div>
-            <div className="flex flex-col items-center justify-center h-full">
-                <img className="w-64 object-contain" src={logo} alt="Logo"></img>
+            <div className="flex flex-col items-center justify-start rounded-full">
+                <img className="w-20 object-contain" src={logo} alt="Logo"></img>
             </div>
 
         </div>
