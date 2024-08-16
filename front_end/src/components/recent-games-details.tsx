@@ -71,6 +71,8 @@ const PlotZone: React.FC<PlotZoneProps> = ({ xCoords, yCoords, sz_top, sz_bot, t
                 return "darkred";
             case "ball":
                 return "green";
+            case "badBalls":
+                return "#013220";
             case "hit":
                 return "gray";
             default:
@@ -327,7 +329,8 @@ const RecentGamesDetails: React.FC<RecentGamesDetailsProps> = ({ pitcher_id, cho
                     atBat.events.forEach(event => {
                         const strike = new Set(['called_strike']);
                         const strikesSwinging = new Set(['swinging_strike', 'foul', 'foul_tip', "swinging_strike_blocked", "foul_bunt"]);
-                        const balls = new Set(['ball', 'blocked_ball', "hit_by_pitch"]);
+                        const balls = new Set(['ball',]);
+                        const badBalls = new Set(['blocked_ball', "hit_by_pitch"]);
                         const hit = new Set(["hit_into_play"]);
 
                         if (event.plate_x !== undefined && event.plate_z !== undefined && event.sz_top !== undefined && event.sz_bot !== undefined && event.description !== undefined) {
@@ -344,6 +347,8 @@ const RecentGamesDetails: React.FC<RecentGamesDetailsProps> = ({ pitcher_id, cho
                                 acc.types.push("swinging");
                             } else if (hit.has(event.description)) {
                                 acc.types.push("hit");
+                            } else if (badBalls.has(event.description)) {
+                                acc.types.push("badBalls");
                             } else {
                                 acc.types.push("unknown");
                             }
@@ -363,7 +368,8 @@ const RecentGamesDetails: React.FC<RecentGamesDetailsProps> = ({ pitcher_id, cho
                 (acc, event) => {
                     const strike = new Set(['called_strike']);
                     const strikesSwinging = new Set(['swinging_strike', 'foul', 'foul_tip', "swinging_strike_blocked", "foul_bunt"]);
-                    const balls = new Set(['ball', 'blocked_ball', "hit_by_pitch"]);
+                    const balls = new Set(['ball',]);
+                    const badBalls = new Set(['blocked_ball', "hit_by_pitch"]);
                     const hit = new Set(["hit_into_play"]);
 
                     if (event.plate_x !== undefined && event.plate_z !== undefined && event.sz_top !== undefined && event.sz_bot !== undefined && event.description !== undefined) {
@@ -380,6 +386,8 @@ const RecentGamesDetails: React.FC<RecentGamesDetailsProps> = ({ pitcher_id, cho
                             acc.types.push("swinging");
                         } else if (hit.has(event.description)) {
                             acc.types.push("hit");
+                        } else if (badBalls.has(event.description)) {
+                            acc.types.push("badBalls");
                         } else {
                             acc.types.push("unknown");
                         }
@@ -509,7 +517,7 @@ const RecentGamesDetails: React.FC<RecentGamesDetailsProps> = ({ pitcher_id, cho
                     </div>
                 </div>
                 <div className=" text-off-white flex items-center justify-center rounded-b-lg ml-4 mb-4  bg-card mt-12 min-w-[1000px]">
-                    <div className="h-custom-xl relative flex items-center justify-center bg-transparent  rounded-xl" style={{"width":"1000px"}}>
+                    <div className="h-custom-xl relative flex items-center justify-center bg-transparent  rounded-xl" style={{ "width": "1000px" }}>
                         <div className="h-64 w-48 border-4 border-gray-200 grid grid-cols-3 grid-rows-3">
                             <div className="flex items-center border justify-center"></div>
                             <div className="flex items-center border justify-center"></div>
