@@ -319,7 +319,6 @@ const RecentGamesDetails: React.FC<RecentGamesDetailsProps> = ({ pitcher_id, cho
     const [selectedAtBat, setSelectedAtBat] = useState<number | null>(null);
 
     // Filter coordinates based on the selected at-bat
-    const uniqueEvents = new Set<string>();
     const aggregateCoordinates = (atBatNumber: number | null) => {
 
         if (atBatNumber === null) {
@@ -400,7 +399,6 @@ const RecentGamesDetails: React.FC<RecentGamesDetailsProps> = ({ pitcher_id, cho
         }
     };
     const { x, y, sz_top, sz_bot, types } = aggregateCoordinates(selectedAtBat);
-    console.log("unique: ", uniqueEvents);
     const formatGameLabel = (gamePk: string, data: any): string => {
         const fullTeamName = getFullTeamName(data[gamePk].opponent);
         const gameDate = new Date(data[gamePk].game_date);
