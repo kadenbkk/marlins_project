@@ -7,6 +7,8 @@ import './tailwind.css';
 import { TabMenu } from 'primereact/tabmenu';
 import ArsenalStats from './arsenal';
 import CountStats from './count';
+import Progression from './progression';
+import HitOutcome from './hit-result';
 interface TabItem {
     label: string;
     command?: () => void;
@@ -442,7 +444,7 @@ const RecentGamesDetails: React.FC<RecentGamesDetailsProps> = ({ pitcher_id, cho
     useEffect(() => {
         fetchRecentGames();
     }, [pitcherId]);
-    const [selectedComponent, setSelectedComponent] = useState<'arsenal' | 'count' | null>(null);
+    const [selectedComponent, setSelectedComponent] = useState<'arsenal' | 'count' |'progression'|'hit'| null>(null);
     const [activeIndex, setActiveIndex] = useState<number>(-1); // To track the active tab index
     const [key, setKey] = useState(0);
 
@@ -453,6 +455,10 @@ const RecentGamesDetails: React.FC<RecentGamesDetailsProps> = ({ pitcher_id, cho
                 return pitcherId && <ArsenalStats pitcherId={pitcherId} />;
             case 'count':
                 return pitcherId && <CountStats pitcherId={pitcherId} />;
+            case 'progression':
+                return pitcherId && <Progression pitcherId={pitcherId} />;
+            case 'hit':
+                return pitcherId && <HitOutcome pitcherId={pitcherId} />;
             default:
                 return null;
         }
@@ -468,15 +474,15 @@ const RecentGamesDetails: React.FC<RecentGamesDetailsProps> = ({ pitcher_id, cho
         },
         {
             label: 'Hit Result',
-            command: () => handleButtonClick('count', 1),
+            command: () => handleButtonClick('hit', 2),
         },
         {
             label: 'Distribution & Progression',
-            command: () => handleButtonClick('count', 1),
+            command: () => handleButtonClick('progression', 3),
         },
     ];
 
-    const handleButtonClick = (component: 'arsenal' | 'count', index: number) => {
+    const handleButtonClick = (component: 'arsenal' | 'count'|'progression'|'hit', index: number) => {
         setSelectedComponent(prev => (prev === component ? null : component));
         setActiveIndex(prev => (prev === index ? -1 : index));
         setKey(prev => prev + 1);
