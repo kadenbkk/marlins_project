@@ -466,6 +466,14 @@ const RecentGamesDetails: React.FC<RecentGamesDetailsProps> = ({ pitcher_id, cho
             label: 'Count Stats',
             command: () => handleButtonClick('count', 1),
         },
+        {
+            label: 'Hit Result',
+            command: () => handleButtonClick('count', 1),
+        },
+        {
+            label: 'Distribution & Progression',
+            command: () => handleButtonClick('count', 1),
+        },
     ];
 
     const handleButtonClick = (component: 'arsenal' | 'count', index: number) => {

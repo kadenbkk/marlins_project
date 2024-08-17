@@ -22,10 +22,10 @@
 }
 .custom-tab-menu .p-menuitem-link {
     /* Specific styles for TabMenu element */
-    padding-left: 100px;
+    padding-left: 60px;
     padding-top: 20px;
     padding-bottom: 20px;
-    padding-right: 100px;
+    padding-right: 60px;
     background-color: transparent !important;
     color: white;
     border-color: white;
