@@ -1,5 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { ScatterChart, Scatter, XAxis, YAxis, Tooltip, CartesianGrid, Legend, ResponsiveContainer } from 'recharts';
+import {
+  ScatterChart, Scatter, XAxis, YAxis, Tooltip,
+  CartesianGrid, Legend, ResponsiveContainer, Label
+} from 'recharts';
+import dayjs from 'dayjs';
 
 interface PitchData {
   game_date: string;
@@ -24,13 +28,18 @@ const Progression: React.FC<ProgressionProps> = ({ pitcherId }) => {
   const [pitchTypeFilter, setPitchTypeFilter] = useState<string>('');
 
   useEffect(() => {
-    // Fetch data from API
     const fetchData = async () => {
       try {
         const response = await fetch(`http://127.0.0.1:5000/stats/pitcher/progression/${pitcherId}`);
         const result = await response.json();
-        console.log("data", result);
-        setData(result.progression);
+
+        // Format the date before setting the data
+        const formattedData = result.progression.map((item: PitchData) => ({
+          ...item,
+          game_date: dayjs(item.game_date).format('YYYY-MM-DD'), // Consistent date format
+        }));
+
+        setData(formattedData);
       } catch (error) {
         console.error('Error fetching data:', error);
       }
@@ -52,15 +61,15 @@ const Progression: React.FC<ProgressionProps> = ({ pitcherId }) => {
     ? data.filter(item => item.pitch_type === pitchTypeFilter)
     : data;
 
-  // Get unique pitch types for filter options
+  // Get unique pitch types for coloring
   const pitchTypes = Array.from(new Set(data.map(item => item.pitch_type)));
 
   // Define colors for different pitch types
   const pitchTypeColors: { [key: string]: string } = {
-    'Fastball': '#8884d8',
-    'Slider': '#82ca9d',
-    'Curveball': '#ffc658',
-    'Changeup': '#ff7300',
+    'FF': '#8884d8',
+    'SL': '#82ca9d',
+    'SI': '#ffc658',
+    'CH': '#ff7300',
     // Add more colors for other pitch types if needed
   };
 
@@ -92,19 +101,46 @@ const Progression: React.FC<ProgressionProps> = ({ pitcherId }) => {
       </div>
       <div className="w-full h-64 border border-red-400">
         <ResponsiveContainer width="100%" height="100%">
-          <ScatterChart>
+          <ScatterChart margin={{ top: 20, right: 20, bottom: 20, left: 20 }}>
             <CartesianGrid />
-            <XAxis type="category" dataKey="game_date" name="Game Date" />
-            <YAxis type="number" dataKey={filter} name={filter} />
-            <Tooltip />
-            <Legend />
-            {pitchTypeFilter ? (
-              <Scatter name={pitchTypeFilter} data={filteredData} fill={pitchTypeColors[pitchTypeFilter] || '#8884d8'} />
-            ) : (
-              pitchTypes.map(pitchType => (
-                <Scatter key={pitchType} name={pitchType} data={data.filter(item => item.pitch_type === pitchType)} fill={pitchTypeColors[pitchType] || '#8884d8'} />
-              ))
-            )}
+            <XAxis
+              type="category"
+              dataKey="game_date"
+              name="Game Date"
+              padding={{ left: 5, right: 5 }}
+              tickFormatter={(tick: string) => dayjs(tick).format('MMM D')} // Format X-axis ticks
+            >
+              <Label value="Game Date" position="bottom" offset={-10} />
+            </XAxis>
+            <YAxis
+              type="number"
+              dataKey={filter}
+              name={filter}
+              domain={['auto', 'auto']}
+              padding={{ top: 20, bottom: 20 }}
+            >
+              <Label value={filter} angle={-90} position="left" offset={10} />
+            </YAxis>
+            <Tooltip
+              formatter={(value: any, name: string, props: any) => {
+                const date = dayjs(props.payload.game_date).format('MMM D');
+                return [`${name}: ${value}`, `Date: ${date}`];
+              }}
+            />
+            <Legend
+              formatter={(value: any) => {
+                return pitchTypes.includes(value) ? value : 'Data'; // Adjust legend text
+              }}
+            />
+            {pitchTypes.map(pitchType => (
+              <Scatter
+                key={pitchType}
+                name={pitchType}
+                data={filteredData.filter(item => item.pitch_type === pitchType)}
+                fill={pitchTypeColors[pitchType] || '#000000'} // Default to black if no color is found
+                shape="circle" // Ensure that points are not overlapping
+              />
+            ))}
           </ScatterChart>
         </ResponsiveContainer>
       </div>

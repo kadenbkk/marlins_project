@@ -61,9 +61,8 @@ const HitOutcome: React.FC<{ pitcherId: string }> = ({ pitcherId }) => {
   }, [pitcherId]);
 
   return (
-    <div>
-      <h2>Hit Sprays {pitcherId}</h2>
-      <div className="w-full h-64 border border-gray-300">
+    <div className="flex flex-row border border-red-400">
+      <div className="w-1/2 h-64 border border-red-300">
         <ResponsiveContainer width="100%" height="100%">
           <ScatterChart>
             <CartesianGrid />
@@ -76,7 +75,7 @@ const HitOutcome: React.FC<{ pitcherId: string }> = ({ pitcherId }) => {
         </ResponsiveContainer>
       </div>
       {summary && (
-        <div className="mt-4">
+        <div className="w-1/2 border border-red-400">
           <h3>Summary</h3>
           <ul>
             <li>Total Hits: {summary.total_hits}</li>

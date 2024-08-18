@@ -147,7 +147,7 @@ const CountStats: React.FC<CountStatsProps> = ({ pitcherId }) => {
                   <Chart type="doughnut" data={chartData} options={chartOptions} className="w-full" />
                 </div>
               )}
-              <div className="w-3/5">
+              <div className="w-4/5">
                 {Object.keys(countStats[openCount]).map((pitchType) => {
                   const pitchData = countStats[openCount][pitchType] || {};
                   return (
@@ -174,9 +174,6 @@ const CountStats: React.FC<CountStatsProps> = ({ pitcherId }) => {
                     </div>
                   );
                 })}
-              </div>
-              <div className="w-1/5">
-                batting avg 
               </div>
             </div>
           </div>

@@ -41,7 +41,7 @@ interface ArsenalStatsResponse {
 }
 
 // ArsenalCard component to display individual pitch data
-const ArsenalCard: React.FC<ArsenalCardProps> = ({ data }) => {  
+const ArsenalCard: React.FC<ArsenalCardProps> = ({ data }) => {
   return (
     <div className="bg-card shadow-lg min-w-[18rem] p-4 h-full rounded-lg border border-gray-200">
       <h3 className="text-lg font-semibold mb-1">{getPitchName(data.pitch_type)}</h3>
@@ -49,7 +49,12 @@ const ArsenalCard: React.FC<ArsenalCardProps> = ({ data }) => {
         {Object.entries(DISPLAY_FIELDS).map(([key, label]) => (
           <div key={key} className="flex justify-between">
             <span className="text-sm font-medium">{label}:</span>
-            <span className="text-sm">{data[key as keyof ArsenalCardData]}</span>
+            <span className="text-sm">
+              {typeof data[key as keyof ArsenalCardData] === 'number'
+                ? (data[key as keyof ArsenalCardData] as number).toFixed(3)
+                : parseFloat(data[key as keyof ArsenalCardData] as string).toFixed(3)}
+            </span>
+
           </div>
         ))}
       </div>
@@ -77,7 +82,7 @@ const ArsenalStats: React.FC<ArsenalStatsProps> = ({ pitcherId }) => {
       }
     } catch (err) {
       setError('Failed to fetch arsenal stats.');
-    } 
+    }
   };
 
   useEffect(() => {
@@ -96,7 +101,7 @@ const ArsenalStats: React.FC<ArsenalStatsProps> = ({ pitcherId }) => {
                 key={index}
                 data={item}
               />
-          ))}
+            ))}
         </div>
       </div>
     </div>
