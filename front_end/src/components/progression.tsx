@@ -99,7 +99,7 @@ const Progression: React.FC<ProgressionProps> = ({ pitcherId }) => {
           ))}
         </select>
       </div>
-      <div className="w-full h-64 border border-red-400">
+      <div className="w-full h-64">
         <ResponsiveContainer width="100%" height="100%">
           <ScatterChart margin={{ top: 20, right: 20, bottom: 20, left: 20 }}>
             <CartesianGrid />

@@ -90,19 +90,15 @@ const ArsenalStats: React.FC<ArsenalStatsProps> = ({ pitcherId }) => {
   }, [pitcherId]);
 
   return (
-    <div className="relative">
-      {loading && <div>Loading...</div>}
-      {error && <div className="text-red-500">{error}</div>}
-      <div className="absolute top-0 left-0 w-full h-64 bg-card flex flex-wrap z-20 overflow-x-auto">
-        <div className="flex space-x-4 p-4">
-          {arsenalStats && arsenalStats.data &&
-            arsenalStats.data.map((item, index) => (
-              <ArsenalCard
-                key={index}
-                data={item}
-              />
-            ))}
-        </div>
+    <div className="w-full h-full bg-card flex flex-wrap overflow-x-auto">
+      <div className="flex space-x-4 p-4">
+        {arsenalStats && arsenalStats.data &&
+          arsenalStats.data.map((item, index) => (
+            <ArsenalCard
+              key={index}
+              data={item}
+            />
+          ))}
       </div>
     </div>
   );

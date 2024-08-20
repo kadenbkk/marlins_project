@@ -1,6 +1,8 @@
 import React from 'react';
 import logo from '../assets/m_logo.png';
-
+import miami from '../assets/miami_text.png';
+import dolphin from '../assets/dolphin.png';
+import marlins from '../assets/marlins_text.png';
 interface ExportFunctionHeaderProps {
     onClick: () => void;
     name: string;
@@ -13,8 +15,46 @@ const Header: React.FC<ExportFunctionHeaderProps> = ({ name, pitcher_id, chosenP
         : chosenPitcherData.Pos === "RP" ? "Relief Pitcher"
             : "Pitcher";
     return (
-        <div className="flex flex-row items-start  justify-between p-4 bg-card">
-            <div className="flex flex-row items-start">
+        <div className="flex flex-row items-center  justify-between p-4 bg-card">
+            <button
+                onClick={onClick}
+                aria-label="Back"
+                style={{
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    border: '2px solid #00A3E0',
+                    boxShadow: '-1px 1px 0 0.5px #EE3541',
+                    backgroundColor: 'black',
+                    color: 'white',
+                    width: '2rem',
+                    height: '2rem',
+                    borderRadius: '50%',
+                    cursor: 'pointer',
+                }}
+            >
+                <i className="pi pi-angle-left"></i>
+            </button>
+            <div className="flex flex-row  items-center  justify-center">
+                <img
+                    src={miami}
+                    alt={""}
+                    className="object-contain h-14"
+                />
+                <img
+                    src={dolphin}
+                    alt={""}
+                    className="ml-3 mr-1 object-contain w-10"
+                />
+                <img
+                    src={marlins}
+                    alt={""}
+                    className="object-contain h-14"
+                />
+            </div>
+            <div className="text-off-white italic w-8 h-8">
+            </div>
+            {/* <div className="flex flex-row items-start">
                 <button
                     onClick={onClick}
                     aria-label="Back"
@@ -59,7 +99,7 @@ const Header: React.FC<ExportFunctionHeaderProps> = ({ name, pitcher_id, chosenP
             </div>
             <div className="flex flex-col items-center justify-start rounded-full">
                 <img className="w-20 object-contain" src={logo} alt="Logo"></img>
-            </div>
+            </div> */}
 
         </div>
     );

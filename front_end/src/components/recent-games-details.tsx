@@ -9,6 +9,7 @@ import ArsenalStats from './arsenal';
 import CountStats from './count';
 import Progression from './progression';
 import HitOutcome from './hit-result';
+import PlayerCard from './player-card';
 interface TabItem {
     label: string;
     command?: () => void;
@@ -303,6 +304,7 @@ const RecentGamesDetails: React.FC<RecentGamesDetailsProps> = ({ pitcher_id, cho
             case "stolen_base":
                 return "SB";
             case "error":
+            case "field_error":
                 return "E";
             case "bunt":
                 return "B";
@@ -444,8 +446,8 @@ const RecentGamesDetails: React.FC<RecentGamesDetailsProps> = ({ pitcher_id, cho
     useEffect(() => {
         fetchRecentGames();
     }, [pitcherId]);
-    const [selectedComponent, setSelectedComponent] = useState<'arsenal' | 'count' |'progression'|'hit'| null>(null);
-    const [activeIndex, setActiveIndex] = useState<number>(-1); // To track the active tab index
+    const [selectedComponent, setSelectedComponent] = useState<'arsenal' | 'count' | 'progression' | 'hit'>('arsenal');
+    const [activeIndex, setActiveIndex] = useState<number>(0); // To track the active tab index
     const [key, setKey] = useState(0);
 
 
@@ -482,53 +484,149 @@ const RecentGamesDetails: React.FC<RecentGamesDetailsProps> = ({ pitcher_id, cho
         },
     ];
 
-    const handleButtonClick = (component: 'arsenal' | 'count'|'progression'|'hit', index: number) => {
-        setSelectedComponent(prev => (prev === component ? null : component));
-        setActiveIndex(prev => (prev === index ? -1 : index));
+    const handleButtonClick = (component: 'arsenal' | 'count' | 'progression' | 'hit', index: number) => {
+        setSelectedComponent(component);
+        setActiveIndex(index);
         setKey(prev => prev + 1);
-
     };
-    const closeSelectedComponent = () => {
-        setSelectedComponent(null);
-        setActiveIndex(-1);
-        setKey(prev => prev + 1);
 
-    }
     return (
-        <div className="flex flex-row h-full">
-            <div className="flex flex-col w-full">
-                <div className="relative w-full ml-4 mt-4">
-                    <div className="absolute top-0 left-0 w-full flex flex-col pr-4 z-20 ">
-                        <div className="flex flex-row bg-card justify-between items-center h-14  bg-card rounded-t-lg">
-                            <TabMenu model={items} activeIndex={activeIndex} key={key} className=" mx-2 custom-tab-menu" />
-                            {activeIndex != -1 && (
-                                <button
-                                    onClick={closeSelectedComponent}
-                                    aria-label="Back"
-                                    style={{
-                                        display: 'flex',
-                                        justifyContent: 'center',
-                                        alignItems: 'center',
-                                        border: '2px solid #00A3E0',
-                                        boxShadow: '-1px 1px 0 0.5px #EE3541',
-                                        backgroundColor: 'black',
-                                        color: 'white',
-                                        width: '2rem',
-                                        height: '2rem',
-                                        borderRadius: '50%',
-                                        cursor: 'pointer',
-                                        marginRight: "1rem",
-                                    }}
-                                >
-                                    <i className="pi pi-times" style={{ fontSize: '12px' }}></i>
-                                </button>
-                            )
-                            }
+        <div className="flex flex-col h-full">
+            <div className="flex w-full pt-4 px-4 flex-row">
+                <PlayerCard name={chosenPitcherData.Name} pitcher_id={pitcher_id} chosenPitcherData={chosenPitcherData} />
+                <div className="ml-4 w-full py-6 px-8 bg-card text-white rounded-lg">
+                    <h2 className="text-2xl border-b border-gray-600 w-full pb-2 mb-2">Season Statistics</h2>
+                    <div className="grid grid-cols-3 gap-y-2 gap-x-20 w-full">
+                        <div className="flex justify-between items-center">
+                            <span className="">Wins:</span>
+                            <span>{chosenPitcherData.W}</span>
                         </div>
-                        {renderSelectedComponent()}
+                        <div className="flex justify-between items-center">
+                            <span className="">Losses:</span>
+                            <span>{chosenPitcherData.L}</span>
+                        </div>
+                        <div className="flex justify-between items-center">
+                            <span className="">Win-Loss %:</span>
+                            <span>{chosenPitcherData["W-L%"]}</span>
+                        </div>
+                        <div className="flex justify-between items-center">
+                            <span className="">Games:</span>
+                            <span>{chosenPitcherData.G}</span>
+                        </div>
+                        <div className="flex justify-between items-center">
+                            <span className="">Earned Runs:</span>
+                            <span>{chosenPitcherData.ER}</span>
+                        </div>
+                        <div className="flex justify-between items-center">
+                            <span className="">ERA:</span>
+                            <span>{chosenPitcherData.ERA}</span>
+                        </div>
+                        <div className="flex justify-between items-center">
+                            <span className="">Batters Faced:</span>
+                            <span>{chosenPitcherData.BF}</span>
+                        </div>
+                        <div className="flex justify-between items-center">
+                            <span className="">Innings Pitched:</span>
+                            <span>{chosenPitcherData.IP}</span>
+                        </div>
+                        <div className="flex justify-between items-center">
+                            <span className="">Walks:</span>
+                            <span>{chosenPitcherData.BB}</span>
+                        </div>
+                        <div className="flex justify-between items-center">
+                            <span className="">BB/9:</span>
+                            <span>{chosenPitcherData.BB9}</span>
+                        </div>
+                        <div className="flex justify-between items-center">
+                            <span className="">Hits Allowed:</span>
+                            <span>{chosenPitcherData.H}</span>
+                        </div>
+                        <div className="flex justify-between items-center">
+                            <span className="">Hits per 9 Innings:</span>
+                            <span>{chosenPitcherData.H9}</span>
+                        </div>
+
+                        <div className="flex justify-between items-center">
+                            <span className="">Strikeouts:</span>
+                            <span>{chosenPitcherData.SO}</span>
+                        </div>
+                        <div className="flex justify-between items-center">
+                            <span className="">SO/9:</span>
+                            <span>{chosenPitcherData.SO9}</span>
+                        </div>
+                        <div className="flex justify-between items-center">
+                            <span className="">Strikeout/Walk Ratio:</span>
+                            <span>{chosenPitcherData["SO/W"]}</span>
+                        </div>
+                        <div className="flex justify-between items-center">
+                            <span className="">WHIP:</span>
+                            <span>{chosenPitcherData.WHIP}</span>
+                        </div>
                     </div>
                 </div>
-                <div className=" text-off-white flex items-center justify-center rounded-b-lg ml-4 mb-4  bg-card mt-12 min-w-[1000px]">
+            </div>
+            <div className="flex flex-col w-full pt-4 px-4">
+                <div className="h-full w-full bg-card rounded-lg flex flex-col p-4">
+                    <div className="flex flex-row justify-center items-center h-14  mb-2">
+                        <TabMenu model={items} activeIndex={activeIndex} key={key} className="custom-tab-menu" />
+                    </div>
+                    {renderSelectedComponent()}
+                </div>
+            </div>
+            <div className="flex flex-row p-4 justify-start">
+                <div className="flex flex-col">
+                    <div className="w-80 flex flex-col  bg-card p-4 rounded-lg">
+                        <h2 className="text-xl text-white mb-2">All Games</h2>
+                        <Dropdown
+                            value={selectedGame}
+                            onChange={(e) => setSelectedGame(e.value)}
+                            options={recentGames}
+                            optionLabel="label"
+                            placeholder="Select a game"
+                            showClear
+                            itemTemplate={gameOptionTemplate}
+                            className="w-full md:w-14rem"
+                            style={{ padding: '5px', border: '1px solid lightgray', borderRadius: "10px", backgroundColor: "white" }}
+                        />
+
+                    </div>
+                    {selectedGame !== null && selectedGame !== undefined && (
+                        <div>
+                            <RenderEventSummary eventCounts={eventCounts} />
+                            <div className="flex flex-col  rounded-lg bg-card p-4 space-y-2 mt-4 h-80 overflow-y-auto">
+                                {atBatArray.reduce((acc: JSX.Element[], result, index) => {
+                                    const inning = result.events[0].inning;
+                                    const isFirstAtBatOfInning = index === 0 || atBatArray[index - 1].events[0].inning !== inning;
+
+                                    if (isFirstAtBatOfInning && index >= 0) {
+                                        acc.push(
+                                            <div key={`separator-${inning}`} className="flex items-center">
+                                                <hr className="flex-grow border-t-2 border-gray-300" />
+                                                <span className="mx-2  text-off-white">Inning {inning}</span>
+                                                <hr className="flex-grow border-t-2 border-gray-300" />
+                                            </div>
+                                        );
+                                    }
+
+
+                                    acc.push(
+                                        <button
+                                            key={result.atBatNumber}
+                                            onClick={() => onAtBatClick(result.atBatNumber)}
+                                            className={`${selectedAtBat == result.atBatNumber ? "bg-blue" : "bg-slate-gray"}  text-black py-2 px-4 flex flex-row justify-between rounded ${selectedAtBat == result.atBatNumber ? "hover:bg-blue" : "hover:bg-slate-gray-hover"}`}
+                                        >
+                                            <div>{playerNames[result.events[0].batter] || 'Loading...'}</div>
+                                            <div>{convertEventToAbbreviation(result.events[0])}</div>
+                                        </button>
+                                    );
+
+                                    return acc;
+                                }, [])}
+                            </div>
+                        </div>
+                    )}
+                </div>
+                <div className=" ml-4 text-off-white flex items-center justify-center rounded-lg bg-card w-full">
                     <div className="h-custom-xl relative flex items-center justify-center bg-transparent  rounded-xl" style={{ "width": "1000px" }}>
                         <div className="h-64 w-48 border-4 border-gray-200 grid grid-cols-3 grid-rows-3">
                             <div className="flex items-center border justify-center"></div>
@@ -546,129 +644,6 @@ const RecentGamesDetails: React.FC<RecentGamesDetailsProps> = ({ pitcher_id, cho
                         </div>
                     </div>
                 </div>
-            </div>
-            <div className="flex flex-col p-4 bg-page w-96 ">
-                <div className="w-80 flex flex-col  bg-card p-4 rounded-lg">
-                    <h2 className="text-xl text-white mb-2">All Games</h2>
-                    <Dropdown
-                        value={selectedGame}
-                        onChange={(e) => setSelectedGame(e.value)}
-                        options={recentGames}
-                        optionLabel="label"
-                        placeholder="Select a game"
-                        showClear
-                        itemTemplate={gameOptionTemplate}
-                        className="w-full md:w-14rem"
-                        style={{ padding: '5px', border: '1px solid lightgray', borderRadius: "10px", backgroundColor: "white" }}
-                    />
-
-                </div>
-                {selectedGame !== null && selectedGame !== undefined ? (
-                    <div>
-                        <RenderEventSummary eventCounts={eventCounts} />
-                        <div className="flex flex-col  rounded-lg bg-card p-4 space-y-2 mt-4 h-80 overflow-y-auto">
-                            {atBatArray.reduce((acc: JSX.Element[], result, index) => {
-                                const inning = result.events[0].inning;
-                                const isFirstAtBatOfInning = index === 0 || atBatArray[index - 1].events[0].inning !== inning;
-
-                                if (isFirstAtBatOfInning && index >= 0) {
-                                    acc.push(
-                                        <div key={`separator-${inning}`} className="flex items-center">
-                                            <hr className="flex-grow border-t-2 border-gray-300" />
-                                            <span className="mx-2  text-off-white">Inning {inning}</span>
-                                            <hr className="flex-grow border-t-2 border-gray-300" />
-                                        </div>
-                                    );
-                                }
-
-
-                                acc.push(
-                                    <button
-                                        key={result.atBatNumber}
-                                        onClick={() => onAtBatClick(result.atBatNumber)}
-                                        className={`${selectedAtBat == result.atBatNumber ? "bg-blue" : "bg-slate-gray"}  text-black py-2 px-4 flex flex-row justify-between rounded ${selectedAtBat == result.atBatNumber ? "hover:bg-blue" : "hover:bg-slate-gray-hover"}`}
-                                    >
-                                        <div>{playerNames[result.events[0].batter] || 'Loading...'}</div>
-                                        <div>{convertEventToAbbreviation(result.events[0])}</div>
-                                    </button>
-                                );
-
-                                return acc;
-                            }, [])}
-                        </div>
-                    </div>
-                ) : (
-                    <div className="mt-2">
-                        <div className="mt-2 grid grid-cols-1 gap-1 p-5 bg-card text-white rounded-lg">
-                            <h2 className="text-xl text-off-white mb-2">Season Statistics</h2>
-                            <div className="flex justify-between items-center">
-                                <span className="">Wins:</span>
-                                <span>{chosenPitcherData.W}</span>
-                            </div>
-                            <div className="flex justify-between items-center">
-                                <span className="">Losses:</span>
-                                <span>{chosenPitcherData.L}</span>
-                            </div>
-                            <div className="flex justify-between items-center">
-                                <span className="">Win-Loss %:</span>
-                                <span>{chosenPitcherData["W-L%"]}</span>
-                            </div>
-                            <div className="flex justify-between items-center">
-                                <span className="">Games:</span>
-                                <span>{chosenPitcherData.G}</span>
-                            </div>
-                            <div className="flex justify-between items-center">
-                                <span className="">Earned Runs:</span>
-                                <span>{chosenPitcherData.ER}</span>
-                            </div>
-                            <div className="flex justify-between items-center">
-                                <span className="">ERA:</span>
-                                <span>{chosenPitcherData.ERA}</span>
-                            </div>
-                            <div className="flex justify-between items-center">
-                                <span className="">Batters Faced:</span>
-                                <span>{chosenPitcherData.BF}</span>
-                            </div>
-                            <div className="flex justify-between items-center">
-                                <span className="">Innings Pitched:</span>
-                                <span>{chosenPitcherData.IP}</span>
-                            </div>
-                            <div className="flex justify-between items-center">
-                                <span className="">Walks:</span>
-                                <span>{chosenPitcherData.BB}</span>
-                            </div>
-                            <div className="flex justify-between items-center">
-                                <span className="">BB/9:</span>
-                                <span>{chosenPitcherData.BB9}</span>
-                            </div>
-                            <div className="flex justify-between items-center">
-                                <span className="">Hits Allowed:</span>
-                                <span>{chosenPitcherData.H}</span>
-                            </div>
-                            <div className="flex justify-between items-center">
-                                <span className="">Hits per 9 Innings:</span>
-                                <span>{chosenPitcherData.H9}</span>
-                            </div>
-
-                            <div className="flex justify-between items-center">
-                                <span className="">Strikeouts:</span>
-                                <span>{chosenPitcherData.SO}</span>
-                            </div>
-                            <div className="flex justify-between items-center">
-                                <span className="">SO/9:</span>
-                                <span>{chosenPitcherData.SO9}</span>
-                            </div>
-                            <div className="flex justify-between items-center">
-                                <span className="">Strikeout/Walk Ratio:</span>
-                                <span>{chosenPitcherData["SO/W"]}</span>
-                            </div>
-                            <div className="flex justify-between items-center">
-                                <span className="">WHIP:</span>
-                                <span>{chosenPitcherData.WHIP}</span>
-                            </div>
-                        </div>
-                    </div>
-                )}
             </div>
         </div>
     );

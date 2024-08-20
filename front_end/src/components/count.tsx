@@ -116,10 +116,8 @@ const CountStats: React.FC<CountStatsProps> = ({ pitcherId }) => {
 
 
   return (
-    <div className="relative">
-      {loading && <div className="w-full bg-card h-72 absolute top-0 left-0 z-20 flex items-center justify-center">Loading...</div>}
-      {error && <p className="text-red-600">{error}</p>}
-      <div className="w-full absolute top-0 left-0 z-20">
+    <div>
+      <div className="w-full">
         <div className="flex flex-wrap bg-card">
           {Object.keys(countStats || {}).map((count) => (
             <div className="w-1/12 px-0.5 rounded" key={count}>

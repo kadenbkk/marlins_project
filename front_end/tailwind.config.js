@@ -31,7 +31,13 @@ module.exports = {
         'red': "#EF3340",
         'slate-gray': "#41748D",
         'slate-gray-hover': '#2E5A6E',
-      }
+      },
+      skew: {
+        'custom-15': '15deg', // Positive skew
+        'custom-neg-15': '-15deg', // Negative skew
+        'custom-25': '25deg', // Positive skew
+        '-custom-25': '-25deg', // Negative skew
+      },
     },
   },
   plugins: [],
