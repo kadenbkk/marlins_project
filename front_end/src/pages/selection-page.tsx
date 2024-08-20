@@ -103,7 +103,7 @@ const SelectionPage: React.FC = () => {
               pitcher.id && (
                 <li key={index}>
                   <button
-                    className="text-gray-700 rounded w-full p-5 pr-10 bg-card pl-5 flex justify-start items-center"
+                    className="text-gray-700 rounded w-full p-5 pr-10 bg-card pl-5 flex justify-start items-center transition-transform transform hover:scale-105"
                     onClick={() => handlePitcherClick(pitcher, index)}
                     style={{
                       border: '2px solid #00A3E0',
